@@ -760,12 +760,14 @@ html.js-anim .about-portrait.is-revealed .about-portrait-sign{
   .cat-grid{ grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:16px; }
   .cat-body{ padding:14px; }
 
-  /* --- סינון מתקפל בנייד --- */
+  /* --- טאב הסינון הקומפקטי - מוסתר בראש העמוד, מופיע כשגוללים למטה --- */
   .cat-filter-toggle{
-    display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%;
+    display:none;  /* בראש העמוד הסינון פתוח, לכן הטאב מוסתר */
+    align-items:center; justify-content:space-between; gap:10px; width:100%;
     background:var(--card); border:1px solid var(--line); border-radius:999px;
     padding:12px 18px; cursor:pointer;
     font-family:"Assistant",sans-serif; font-weight:700; font-size:15.5px; color:var(--ink);
+    box-shadow:0 10px 24px -16px var(--shadow-warm);
   }
   .cat-filter-toggle .cft-main{ display:flex; align-items:center; gap:9px; }
   .cat-filter-toggle .cft-main svg{ width:19px; height:19px; color:var(--magenta-deep); }
@@ -776,10 +778,13 @@ html.js-anim .about-portrait.is-revealed .about-portrait-sign{
   }
   .cat-toolbar.is-open .cft-chev{ transform:rotate(-135deg); margin-top:3px; }
 
-  /* מכווץ: מציגים רק את הכפתור. פתוח: מציגים את הפילטרים והתחתית */
-  #cat-filters, .cat-toolbar-foot{ display:none; }
-  .cat-toolbar.is-open #cat-filters{ display:block; }
-  .cat-toolbar.is-open .cat-toolbar-foot{ display:flex; }
+  /* הפילטרים פתוחים כברירת מחדל, עם קיפול חלק (max-height) */
+  #cat-filters{ overflow:hidden; max-height:640px; opacity:1; transition:max-height .32s var(--ease), opacity .22s ease; }
+
+  /* גוללים למטה -> מופיע הטאב, הפילטרים מתקפלים. לחיצה על הטאב (is-open) פותחת שוב */
+  .cat-toolbar.is-collapsed .cat-filter-toggle{ display:flex; }
+  .cat-toolbar.is-collapsed:not(.is-open) #cat-filters{ max-height:0; opacity:0; }
+  .cat-toolbar.is-collapsed:not(.is-open) .cat-toolbar-foot{ display:none; }
 }
 
 /* cta band */

@@ -203,14 +203,33 @@
     document.getElementById("cat-reset").addEventListener("click", resetFilters);
     document.getElementById("cat-empty-reset").addEventListener("click", resetFilters);
 
-    // כפתור פתיחה/כיווץ של הסינון (נייד) - מכווץ כברירת מחדל, נפתח בלחיצה
+    // סינון בנייד: פתוח בראש העמוד, מתקפל לטאב קומפקטי כשגוללים למטה. לחיצה על הטאב פותחת שוב.
     var toggle = document.getElementById("cat-filter-toggle");
     var toolbar = document.querySelector(".cat-toolbar");
     if (toggle && toolbar) {
+      var threshold = 0, ticking = false;
+      function measure() { threshold = toolbar.offsetTop + 6; }
+      function update() {
+        var y = window.pageYOffset || document.documentElement.scrollTop;
+        if (y > threshold) {
+          toolbar.classList.add("is-collapsed");
+        } else {
+          // חזרנו לראש העמוד - הסינון נפתח שוב אוטומטית
+          toolbar.classList.remove("is-collapsed");
+          toolbar.classList.remove("is-open");
+          toggle.setAttribute("aria-expanded", "false");
+        }
+        ticking = false;
+      }
       toggle.addEventListener("click", function () {
         var open = toolbar.classList.toggle("is-open");
         toggle.setAttribute("aria-expanded", open ? "true" : "false");
       });
+      window.addEventListener("scroll", function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }, { passive: true });
+      window.addEventListener("resize", measure);
+      measure(); update();
     }
 
     var modal = document.getElementById("cat-modal");
