@@ -54,20 +54,24 @@
         chip.appendChild(sw);
       }
       chip.appendChild(document.createTextNode(val === "__all__" ? "הכל" : val));
-      chip.addEventListener("click", function () { onChip(key, this.getAttribute("data-val"), group); });
+      chip.addEventListener("click", function () { onChip(key, this.getAttribute("data-val")); });
       chips.appendChild(chip);
     });
     group.appendChild(chips);
     container.appendChild(group);
   }
 
-  function onChip(key, val, group) {
-    state[key] = (state[key] === val) ? "" : val;
-    // אם נבחר "הכל" (val ריק) - איפוס הקבוצה
-    group.querySelectorAll(".chip").forEach(function (c) {
-      var cv = c.getAttribute("data-val");
-      c.classList.toggle("is-active", cv === state[key]);
+  // מסנכרן את מצב ה"פעיל" בכל הצ'יפים - גם בסינון ה-inline וגם בפאנל של הטאב (שני עותקים)
+  function syncChips() {
+    document.querySelectorAll(".chip").forEach(function (c) {
+      var k = c.getAttribute("data-key");
+      c.classList.toggle("is-active", c.getAttribute("data-val") === (state[k] || ""));
     });
+  }
+
+  function onChip(key, val) {
+    state[key] = (state[key] === val) ? "" : val;
+    syncChips();
     render();
   }
 
@@ -119,14 +123,14 @@
   function render() {
     var grid = document.getElementById("cat-grid");
     var empty = document.getElementById("cat-empty");
-    var count = document.getElementById("cat-count");
     var list = filtered();
 
     grid.innerHTML = "";
     var countText = list.length + (list.length === 1 ? " דגם" : " דגמים");
-    count.textContent = countText;
-    var countM = document.getElementById("cat-count-m");   // מספר התוצאות בשורת הסינון המכווצת (נייד)
-    if (countM) countM.textContent = countText;
+    // מעדכן את כל מוני התוצאות: ה-inline (#cat-count) + הטאב והפאנל (.cat-count-m)
+    var cMain = document.getElementById("cat-count");
+    if (cMain) cMain.textContent = countText;
+    document.querySelectorAll(".cat-count-m").forEach(function (el) { el.textContent = countText; });
 
     if (!list.length) {
       empty.hidden = false;
@@ -140,9 +144,7 @@
 
   function resetFilters() {
     state = { color: "", length: "", hairType: "" };
-    document.querySelectorAll(".chip").forEach(function (c) {
-      c.classList.toggle("is-active", c.getAttribute("data-val") === "");
-    });
+    syncChips();
     render();
   }
 
@@ -194,27 +196,63 @@
   }
 
   // ---- אתחול ----
-  document.addEventListener("DOMContentLoaded", function () {
-    var fbar = document.getElementById("cat-filters");
-    buildFilterGroup(fbar, "color", "צבע", COLOR_ORDER.slice(), true);
-    buildFilterGroup(fbar, "length", "אורך", LENGTHS.slice(), false);
-    buildFilterGroup(fbar, "hairType", "סוג שיער", HAIRTYPES.slice(), false);
+  // בונה קבוצות פילטר לתוך מיכל נתון
+  function buildFilters(container) {
+    if (!container) return;
+    buildFilterGroup(container, "color", "צבע", COLOR_ORDER.slice(), true);
+    buildFilterGroup(container, "length", "אורך", LENGTHS.slice(), false);
+    buildFilterGroup(container, "hairType", "סוג שיער", HAIRTYPES.slice(), false);
+  }
 
-    document.getElementById("cat-reset").addEventListener("click", resetFilters);
+  // הטאב בנייד: מופיע כשגוללים אל הקטלוג, פותח פאנל סינון (שכבת overlay - אפס קפיצה)
+  function setupTab() {
+    var tab = document.getElementById("cat-tab");
+    var toolbar = document.querySelector(".cat-toolbar");
+    var backdrop = document.getElementById("cat-tab-backdrop");
+    var applyBtn = document.querySelector(".cat-tabpanel-apply");
+    if (!tab || !toolbar) return;
+
+    var nav = document.querySelector(".nav");
+    var showAt = 0, ticking = false;
+    function measure() {
+      var navH = nav ? nav.offsetHeight : 64;
+      document.documentElement.style.setProperty("--navh", navH + "px");  // הטאב/הפאנל יושבים מתחת ל-nav
+      // הטאב מופיע כשהסינון ה-inline נעלם מאחורי ה-nav
+      showAt = toolbar.offsetTop + toolbar.offsetHeight - navH;
+    }
+    function openPanel() { document.body.classList.add("cat-panel-open"); tab.setAttribute("aria-expanded", "true"); }
+    function closePanel() { document.body.classList.remove("cat-panel-open"); tab.setAttribute("aria-expanded", "false"); }
+    function onScroll() {
+      var y = window.pageYOffset || document.documentElement.scrollTop;
+      if (y > showAt) {
+        tab.classList.add("is-visible");
+      } else {
+        // חזרנו לראש - הסינון המלא inline גלוי, מסתירים את הטאב וסוגרים פאנל אם פתוח
+        tab.classList.remove("is-visible");
+        closePanel();
+      }
+      ticking = false;
+    }
+    tab.addEventListener("click", function () {
+      document.body.classList.contains("cat-panel-open") ? closePanel() : openPanel();
+    });
+    if (backdrop) backdrop.addEventListener("click", closePanel);
+    if (applyBtn) applyBtn.addEventListener("click", closePanel);
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closePanel(); });
+    window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+    window.addEventListener("resize", function () { measure(); onScroll(); });
+    window.addEventListener("load", measure);
+    measure(); onScroll();
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    buildFilters(document.getElementById("cat-filters"));    // סינון inline (ראש העמוד / דסקטופ)
+    buildFilters(document.getElementById("cat-filters-2"));  // עותק לפאנל הטאב (נייד)
+
+    document.querySelectorAll(".cat-reset").forEach(function (b) { b.addEventListener("click", resetFilters); });
     document.getElementById("cat-empty-reset").addEventListener("click", resetFilters);
 
-    // סינון כמגירה בנייד: הטאב פותח/סוגר bottom-sheet. שכבה מרחפת - לא משנה פריסה, לכן אין קפיצה.
-    var toggle = document.getElementById("cat-filter-toggle");
-    var backdrop = document.getElementById("cat-drawer-backdrop");
-    var applyBtn = document.getElementById("cat-drawer-apply");
-    function openDrawer() { document.body.classList.add("cat-drawer-open"); if (toggle) toggle.setAttribute("aria-expanded", "true"); }
-    function closeDrawer() { document.body.classList.remove("cat-drawer-open"); if (toggle) toggle.setAttribute("aria-expanded", "false"); }
-    if (toggle) toggle.addEventListener("click", function () {
-      document.body.classList.contains("cat-drawer-open") ? closeDrawer() : openDrawer();
-    });
-    if (backdrop) backdrop.addEventListener("click", closeDrawer);
-    if (applyBtn) applyBtn.addEventListener("click", closeDrawer);
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeDrawer(); });
+    setupTab();
 
     var modal = document.getElementById("cat-modal");
     modal.querySelector(".m-close").addEventListener("click", closeModal);

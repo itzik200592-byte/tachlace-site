@@ -751,9 +751,8 @@ html.js-anim .about-portrait.is-revealed .about-portrait-sign{
 .m-colornote{ font-size:13.5px; color:var(--muted); line-height:1.6; background:var(--bg2); border:1px solid var(--line); border-radius:12px; padding:10px 14px; margin-bottom:16px; text-align:center; }
 .m-note{ text-align:center; font-size:13px; color:var(--muted); margin-top:12px; }
 
-/* טאב הסינון ורכיבי המגירה - פעילים רק בנייד. בדסקטופ הסינון תמיד פתוח inline */
-.cat-filter-toggle{ display:none; }
-.cat-drawer-grip, .cat-drawer-head, #cat-drawer-apply, .cat-drawer-backdrop{ display:none; }
+/* טאב הסינון והפאנל שלו - פעילים רק בנייד. בדסקטופ הסינון תמיד פתוח inline */
+.cat-tab, .cat-tabpanel, .cat-tab-backdrop{ display:none; }
 
 @media (max-width:600px){
   .cat-toolbar{ top:0; padding:12px 0; }
@@ -761,51 +760,52 @@ html.js-anim .about-portrait.is-revealed .about-portrait-sign{
   .cat-grid{ grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:16px; }
   .cat-body{ padding:14px; }
 
-  /* ===== סינון כמגירה (bottom sheet) בנייד =====
-     הסרגל הדביק נשאר קומפקטי בגובה קבוע -> הקטלוג זורם חלק בלי שום קפיצה.
-     הסינון נשלף כשכבה מרחפת מלמטה ולא דוחף את התוכן. */
-  .cat-toolbar .wrap{ gap:0; }
-  .cat-filter-toggle{
-    display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%;
-    background:var(--card); border:1px solid var(--line); border-radius:999px;
-    padding:12px 18px; cursor:pointer;
+  /* ===== סינון בנייד: inline מלא בראש, מתחלף בטאב fixed בגלילה =====
+     הסינון המלא בזרימה רגילה (לא דביק) -> נגלל טבעית, אפס קפיצה.
+     הטאב והפאנל הם שכבות fixed -> לא משנים פריסה, אפס קפיצה. */
+  .cat-toolbar{ position:static; top:auto; padding:16px 0; }
+
+  /* הטאב הקומפקטי - fixed מתחת ל-nav (--navh נמדד ב-JS), מחליק פנימה כשגוללים */
+  .cat-tab{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    position:fixed; top:var(--navh, 64px); inset-inline:0; width:100%; z-index:95;
+    padding:13px 22px; border:none; border-bottom:1px solid var(--line);
+    background:color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter:blur(10px);
+    box-shadow:0 8px 20px -14px var(--shadow-warm); cursor:pointer;
     font-family:"Assistant",sans-serif; font-weight:700; font-size:15.5px; color:var(--ink);
-    box-shadow:0 10px 24px -16px var(--shadow-warm);
+    transform:translateY(-120%); transition:transform .38s var(--ease);
   }
-  .cat-filter-toggle .cft-main{ display:flex; align-items:center; gap:9px; }
-  .cat-filter-toggle .cft-main svg{ width:19px; height:19px; color:var(--magenta-deep); }
+  .cat-tab.is-visible{ transform:translateY(0); }
+  .cat-tab .cft-main{ display:flex; align-items:center; gap:9px; }
+  .cat-tab .cft-main svg{ width:19px; height:19px; color:var(--magenta-deep); }
   .cft-meta{ display:flex; align-items:center; gap:12px; color:var(--muted); font-weight:600; font-size:14px; }
   .cft-chev{
     width:9px; height:9px; border-inline-end:2px solid var(--muted); border-bottom:2px solid var(--muted);
     transform:rotate(45deg); margin-top:-3px; transition:transform .28s var(--ease);
   }
-  body.cat-drawer-open .cft-chev{ transform:rotate(-135deg); margin-top:3px; }
+  body.cat-panel-open .cft-chev{ transform:rotate(-135deg); margin-top:3px; }
 
-  /* המגירה - shelf שנשלף מלמטה, position:fixed כך שאינו משפיע על פריסת העמוד (אפס קפיצה) */
-  .cat-drawer{
-    position:fixed; inset-inline:0; bottom:0; z-index:85;
-    background:var(--bg); padding:14px 20px calc(22px + env(safe-area-inset-bottom, 0px));
-    max-height:84vh; overflow-y:auto;
-    box-shadow:0 -22px 50px -18px rgba(74,50,38,.5);
-    border-radius:24px 24px 0 0;
-    transform:translateY(100%); transition:transform .42s var(--ease);
+  /* הפאנל שנפתח מהטאב - נשלף מלמעלה מתחת לטאב, שכבת overlay */
+  .cat-tabpanel{
+    display:block; position:fixed; top:var(--navh, 64px); inset-inline:0; z-index:94;
+    background:var(--bg); padding:62px 20px 22px; max-height:84vh; overflow-y:auto;
+    box-shadow:0 26px 50px -20px rgba(74,50,38,.45); border-radius:0 0 22px 22px;
+    transform:translateY(-140%); transition:transform .4s var(--ease);
   }
-  body.cat-drawer-open .cat-drawer{ transform:translateY(0); }
-  .cat-drawer-grip{ display:block; width:46px; height:5px; border-radius:99px; background:var(--line); margin:2px auto 14px; }
-  .cat-drawer-head{
-    display:block; text-align:center; font-family:"Bellefair",Georgia,serif;
-    font-size:23px; color:var(--ink); margin-bottom:16px;
+  body.cat-panel-open .cat-tabpanel{ transform:translateY(0); }
+  .cat-tabpanel-head{
+    text-align:center; font-family:"Bellefair",Georgia,serif; font-size:22px; color:var(--ink); margin-bottom:14px;
   }
-  .cat-toolbar-foot{ margin-top:14px; }
-  #cat-drawer-apply{ display:flex; width:100%; justify-content:center; margin-top:18px; }
+  .cat-tabpanel .cat-toolbar-foot{ margin-top:14px; }
+  .cat-tabpanel-apply{ display:flex; width:100%; justify-content:center; margin-top:18px; }
 
-  /* רקע כהה מאחורי המגירה */
-  .cat-drawer-backdrop{
-    display:block; position:fixed; inset:0; z-index:80; background:rgba(74,50,38,.42);
+  /* רקע כהה מאחורי הפאנל */
+  .cat-tab-backdrop{
+    display:block; position:fixed; inset:0; z-index:90; background:rgba(74,50,38,.42);
     opacity:0; visibility:hidden; transition:opacity .3s ease, visibility .3s;
   }
-  body.cat-drawer-open .cat-drawer-backdrop{ opacity:1; visibility:visible; }
-  body.cat-drawer-open{ overflow:hidden; }
+  body.cat-panel-open .cat-tab-backdrop{ opacity:1; visibility:visible; }
+  body.cat-panel-open{ overflow:hidden; }
 }
 
 /* cta band */
