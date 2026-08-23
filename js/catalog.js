@@ -203,22 +203,30 @@
     document.getElementById("cat-reset").addEventListener("click", resetFilters);
     document.getElementById("cat-empty-reset").addEventListener("click", resetFilters);
 
-    // סינון בנייד: פתוח בראש העמוד, מתקפל לטאב קומפקטי כשגוללים למטה. לחיצה על הטאב פותחת שוב.
+    // סינון בנייד: פתוח בראש העמוד, מתקפל בעדינות לטאב קומפקטי כשגוללים למטה. לחיצה על הטאב פותחת שוב.
     var toggle = document.getElementById("cat-filter-toggle");
     var toolbar = document.querySelector(".cat-toolbar");
-    if (toggle && toolbar) {
-      var threshold = 0, ticking = false;
-      function measure() { threshold = toolbar.offsetTop + 6; }
+    var filtersEl = document.getElementById("cat-filters");
+    if (toggle && toolbar && filtersEl) {
+      var collapseAt = 0, expandAt = 0, ticking = false;
+      function measure() {
+        // גובה אמיתי של הפילטרים -> אקורדיון חלק (max-height מדויק, לא קפיצה)
+        toolbar.style.setProperty("--fh", filtersEl.scrollHeight + "px");
+        var top = toolbar.offsetTop;
+        collapseAt = top + 24;               // מתקפל אחרי שעברנו את הסרגל
+        expandAt = Math.max(0, top - 40);    // נפתח שוב רק קרוב לראש. הפער ביניהם = אזור-מת נגד ריצוד
+      }
       function update() {
         var y = window.pageYOffset || document.documentElement.scrollTop;
-        if (y > threshold) {
+        if (y > collapseAt) {
           toolbar.classList.add("is-collapsed");
-        } else {
+        } else if (y < expandAt) {
           // חזרנו לראש העמוד - הסינון נפתח שוב אוטומטית
           toolbar.classList.remove("is-collapsed");
           toolbar.classList.remove("is-open");
           toggle.setAttribute("aria-expanded", "false");
         }
+        // באזור הביניים לא נוגעים במצב - זה מונע את הקפיצות ליד הסף
         ticking = false;
       }
       toggle.addEventListener("click", function () {
@@ -228,7 +236,8 @@
       window.addEventListener("scroll", function () {
         if (!ticking) { ticking = true; requestAnimationFrame(update); }
       }, { passive: true });
-      window.addEventListener("resize", measure);
+      window.addEventListener("resize", function () { measure(); update(); });
+      window.addEventListener("load", measure);   // מדידה מחדש אחרי טעינת הגופנים
       measure(); update();
     }
 
