@@ -81,6 +81,17 @@
   <!-- ===== סרגל פילטרים ===== -->
   <div class="cat-toolbar">
     <div class="wrap">
+      <!-- כפתור פתיחה/כיווץ - מוצג רק בנייד. הסינון מכווץ כברירת מחדל כדי לא להסתיר את הדגמים -->
+      <button id="cat-filter-toggle" class="cat-filter-toggle" type="button" aria-expanded="false" aria-controls="cat-filters">
+        <span class="cft-main">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <line x1="3" y1="7" x2="21" y2="7"/><circle cx="9" cy="7" r="2.4"/>
+            <line x1="3" y1="14" x2="21" y2="14"/><circle cx="15" cy="14" r="2.4"/>
+          </svg>
+          סינון
+        </span>
+        <span class="cft-meta"><span id="cat-count-m">—</span><span class="cft-chev" aria-hidden="true"></span></span>
+      </button>
       <div id="cat-filters"><!-- קבוצות הפילטר נבנות ב-JS --></div>
       <div class="cat-toolbar-foot">
         <span id="cat-count">—</span>

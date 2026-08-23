@@ -123,7 +123,10 @@
     var list = filtered();
 
     grid.innerHTML = "";
-    count.textContent = list.length + (list.length === 1 ? " דגם" : " דגמים");
+    var countText = list.length + (list.length === 1 ? " דגם" : " דגמים");
+    count.textContent = countText;
+    var countM = document.getElementById("cat-count-m");   // מספר התוצאות בשורת הסינון המכווצת (נייד)
+    if (countM) countM.textContent = countText;
 
     if (!list.length) {
       empty.hidden = false;
@@ -199,6 +202,16 @@
 
     document.getElementById("cat-reset").addEventListener("click", resetFilters);
     document.getElementById("cat-empty-reset").addEventListener("click", resetFilters);
+
+    // כפתור פתיחה/כיווץ של הסינון (נייד) - מכווץ כברירת מחדל, נפתח בלחיצה
+    var toggle = document.getElementById("cat-filter-toggle");
+    var toolbar = document.querySelector(".cat-toolbar");
+    if (toggle && toolbar) {
+      toggle.addEventListener("click", function () {
+        var open = toolbar.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+    }
 
     var modal = document.getElementById("cat-modal");
     modal.querySelector(".m-close").addEventListener("click", closeModal);
