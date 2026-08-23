@@ -203,43 +203,18 @@
     document.getElementById("cat-reset").addEventListener("click", resetFilters);
     document.getElementById("cat-empty-reset").addEventListener("click", resetFilters);
 
-    // סינון בנייד: פתוח בראש העמוד, מתקפל בעדינות לטאב קומפקטי כשגוללים למטה. לחיצה על הטאב פותחת שוב.
+    // סינון כמגירה בנייד: הטאב פותח/סוגר bottom-sheet. שכבה מרחפת - לא משנה פריסה, לכן אין קפיצה.
     var toggle = document.getElementById("cat-filter-toggle");
-    var toolbar = document.querySelector(".cat-toolbar");
-    var filtersEl = document.getElementById("cat-filters");
-    if (toggle && toolbar && filtersEl) {
-      var collapseAt = 0, expandAt = 0, ticking = false;
-      function measure() {
-        // גובה אמיתי של הפילטרים -> אקורדיון חלק (max-height מדויק, לא קפיצה)
-        toolbar.style.setProperty("--fh", filtersEl.scrollHeight + "px");
-        var top = toolbar.offsetTop;
-        collapseAt = top + 24;               // מתקפל אחרי שעברנו את הסרגל
-        expandAt = Math.max(0, top - 40);    // נפתח שוב רק קרוב לראש. הפער ביניהם = אזור-מת נגד ריצוד
-      }
-      function update() {
-        var y = window.pageYOffset || document.documentElement.scrollTop;
-        if (y > collapseAt) {
-          toolbar.classList.add("is-collapsed");
-        } else if (y < expandAt) {
-          // חזרנו לראש העמוד - הסינון נפתח שוב אוטומטית
-          toolbar.classList.remove("is-collapsed");
-          toolbar.classList.remove("is-open");
-          toggle.setAttribute("aria-expanded", "false");
-        }
-        // באזור הביניים לא נוגעים במצב - זה מונע את הקפיצות ליד הסף
-        ticking = false;
-      }
-      toggle.addEventListener("click", function () {
-        var open = toolbar.classList.toggle("is-open");
-        toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      });
-      window.addEventListener("scroll", function () {
-        if (!ticking) { ticking = true; requestAnimationFrame(update); }
-      }, { passive: true });
-      window.addEventListener("resize", function () { measure(); update(); });
-      window.addEventListener("load", measure);   // מדידה מחדש אחרי טעינת הגופנים
-      measure(); update();
-    }
+    var backdrop = document.getElementById("cat-drawer-backdrop");
+    var applyBtn = document.getElementById("cat-drawer-apply");
+    function openDrawer() { document.body.classList.add("cat-drawer-open"); if (toggle) toggle.setAttribute("aria-expanded", "true"); }
+    function closeDrawer() { document.body.classList.remove("cat-drawer-open"); if (toggle) toggle.setAttribute("aria-expanded", "false"); }
+    if (toggle) toggle.addEventListener("click", function () {
+      document.body.classList.contains("cat-drawer-open") ? closeDrawer() : openDrawer();
+    });
+    if (backdrop) backdrop.addEventListener("click", closeDrawer);
+    if (applyBtn) applyBtn.addEventListener("click", closeDrawer);
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeDrawer(); });
 
     var modal = document.getElementById("cat-modal");
     modal.querySelector(".m-close").addEventListener("click", closeModal);

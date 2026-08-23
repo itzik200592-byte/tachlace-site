@@ -81,8 +81,8 @@
   <!-- ===== סרגל פילטרים ===== -->
   <div class="cat-toolbar">
     <div class="wrap">
-      <!-- כפתור פתיחה/כיווץ - מוצג רק בנייד. הסינון מכווץ כברירת מחדל כדי לא להסתיר את הדגמים -->
-      <button id="cat-filter-toggle" class="cat-filter-toggle" type="button" aria-expanded="false" aria-controls="cat-filters">
+      <!-- טאב "סינון" - מוצג רק בנייד, סרגל קומפקטי שנשאר בגובה קבוע (אין קפיצה) -->
+      <button id="cat-filter-toggle" class="cat-filter-toggle" type="button" aria-expanded="false" aria-controls="cat-drawer">
         <span class="cft-main">
           <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
             <line x1="3" y1="7" x2="21" y2="7"/><circle cx="9" cy="7" r="2.4"/>
@@ -92,13 +92,20 @@
         </span>
         <span class="cft-meta"><span id="cat-count-m">—</span><span class="cft-chev" aria-hidden="true"></span></span>
       </button>
-      <div id="cat-filters"><!-- קבוצות הפילטר נבנות ב-JS --></div>
-      <div class="cat-toolbar-foot">
-        <span id="cat-count">—</span>
-        <button id="cat-reset" type="button">איפוס סינון</button>
+      <!-- הסינון עצמו: בדסקטופ מוצג inline; בנייד הופך למגירה (bottom sheet) מעל התוכן -->
+      <div id="cat-drawer" class="cat-drawer" role="dialog" aria-modal="true" aria-label="סינון דגמים">
+        <div class="cat-drawer-grip" aria-hidden="true"></div>
+        <div class="cat-drawer-head">סינון דגמים</div>
+        <div id="cat-filters"><!-- קבוצות הפילטר נבנות ב-JS --></div>
+        <div class="cat-toolbar-foot">
+          <span id="cat-count">—</span>
+          <button id="cat-reset" type="button">איפוס סינון</button>
+        </div>
+        <button id="cat-drawer-apply" class="btn btn-main" type="button">הצג דגמים</button>
       </div>
     </div>
   </div>
+  <div id="cat-drawer-backdrop" class="cat-drawer-backdrop"></div>
 
   <!-- ===== רשת הדגמים ===== -->
   <section class="cat-section">

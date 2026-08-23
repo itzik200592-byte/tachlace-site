@@ -751,8 +751,9 @@ html.js-anim .about-portrait.is-revealed .about-portrait-sign{
 .m-colornote{ font-size:13.5px; color:var(--muted); line-height:1.6; background:var(--bg2); border:1px solid var(--line); border-radius:12px; padding:10px 14px; margin-bottom:16px; text-align:center; }
 .m-note{ text-align:center; font-size:13px; color:var(--muted); margin-top:12px; }
 
-/* כפתור פתיחת הסינון - מוסתר בדסקטופ (הסינון תמיד פתוח) */
+/* טאב הסינון ורכיבי המגירה - פעילים רק בנייד. בדסקטופ הסינון תמיד פתוח inline */
 .cat-filter-toggle{ display:none; }
+.cat-drawer-grip, .cat-drawer-head, #cat-drawer-apply, .cat-drawer-backdrop{ display:none; }
 
 @media (max-width:600px){
   .cat-toolbar{ top:0; padding:12px 0; }
@@ -760,10 +761,12 @@ html.js-anim .about-portrait.is-revealed .about-portrait-sign{
   .cat-grid{ grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:16px; }
   .cat-body{ padding:14px; }
 
-  /* --- טאב הסינון הקומפקטי - מוסתר בראש העמוד, מופיע כשגוללים למטה --- */
+  /* ===== סינון כמגירה (bottom sheet) בנייד =====
+     הסרגל הדביק נשאר קומפקטי בגובה קבוע -> הקטלוג זורם חלק בלי שום קפיצה.
+     הסינון נשלף כשכבה מרחפת מלמטה ולא דוחף את התוכן. */
+  .cat-toolbar .wrap{ gap:0; }
   .cat-filter-toggle{
-    display:none;  /* בראש העמוד הסינון פתוח, לכן הטאב מוסתר */
-    align-items:center; justify-content:space-between; gap:10px; width:100%;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%;
     background:var(--card); border:1px solid var(--line); border-radius:999px;
     padding:12px 18px; cursor:pointer;
     font-family:"Assistant",sans-serif; font-weight:700; font-size:15.5px; color:var(--ink);
@@ -774,19 +777,35 @@ html.js-anim .about-portrait.is-revealed .about-portrait-sign{
   .cft-meta{ display:flex; align-items:center; gap:12px; color:var(--muted); font-weight:600; font-size:14px; }
   .cft-chev{
     width:9px; height:9px; border-inline-end:2px solid var(--muted); border-bottom:2px solid var(--muted);
-    transform:rotate(45deg); margin-top:-3px; transition:transform .25s var(--ease);
+    transform:rotate(45deg); margin-top:-3px; transition:transform .28s var(--ease);
   }
-  .cat-toolbar.is-open .cft-chev{ transform:rotate(-135deg); margin-top:3px; }
+  body.cat-drawer-open .cft-chev{ transform:rotate(-135deg); margin-top:3px; }
 
-  /* הפילטרים פתוחים כברירת מחדל. --fh = הגובה האמיתי (נמדד ב-JS) -> אקורדיון חלק ולא קפיצה */
-  #cat-filters{ overflow:hidden; max-height:var(--fh, 640px); opacity:1;
-    transition:max-height .4s var(--ease), opacity .3s ease; }
-  .cat-toolbar-foot{ transition:opacity .3s ease; }
+  /* המגירה - shelf שנשלף מלמטה, position:fixed כך שאינו משפיע על פריסת העמוד (אפס קפיצה) */
+  .cat-drawer{
+    position:fixed; inset-inline:0; bottom:0; z-index:85;
+    background:var(--bg); padding:14px 20px calc(22px + env(safe-area-inset-bottom, 0px));
+    max-height:84vh; overflow-y:auto;
+    box-shadow:0 -22px 50px -18px rgba(74,50,38,.5);
+    border-radius:24px 24px 0 0;
+    transform:translateY(100%); transition:transform .42s var(--ease);
+  }
+  body.cat-drawer-open .cat-drawer{ transform:translateY(0); }
+  .cat-drawer-grip{ display:block; width:46px; height:5px; border-radius:99px; background:var(--line); margin:2px auto 14px; }
+  .cat-drawer-head{
+    display:block; text-align:center; font-family:"Bellefair",Georgia,serif;
+    font-size:23px; color:var(--ink); margin-bottom:16px;
+  }
+  .cat-toolbar-foot{ margin-top:14px; }
+  #cat-drawer-apply{ display:flex; width:100%; justify-content:center; margin-top:18px; }
 
-  /* גוללים למטה -> מופיע הטאב, הפילטרים מתקפלים בעדינות. לחיצה על הטאב (is-open) פותחת שוב */
-  .cat-toolbar.is-collapsed .cat-filter-toggle{ display:flex; }
-  .cat-toolbar.is-collapsed:not(.is-open) #cat-filters{ max-height:0; opacity:0; }
-  .cat-toolbar.is-collapsed:not(.is-open) .cat-toolbar-foot{ display:none; }
+  /* רקע כהה מאחורי המגירה */
+  .cat-drawer-backdrop{
+    display:block; position:fixed; inset:0; z-index:80; background:rgba(74,50,38,.42);
+    opacity:0; visibility:hidden; transition:opacity .3s ease, visibility .3s;
+  }
+  body.cat-drawer-open .cat-drawer-backdrop{ opacity:1; visibility:visible; }
+  body.cat-drawer-open{ overflow:hidden; }
 }
 
 /* cta band */
