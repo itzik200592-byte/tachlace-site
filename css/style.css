@@ -780,7 +780,7 @@ html.js-anim .about-portrait.is-revealed .about-portrait-sign{
   .cat-tab .cft-main svg{ width:19px; height:19px; color:var(--magenta-deep); }
   .cft-meta{ display:flex; align-items:center; gap:12px; color:var(--muted); font-weight:600; font-size:14px; }
   .cft-chev{
-    width:9px; height:9px; border-inline-end:2px solid var(--muted); border-bottom:2px solid var(--muted);
+    width:9px; height:9px; border-right:2px solid var(--muted); border-bottom:2px solid var(--muted);
     transform:rotate(45deg); margin-top:-3px; transition:transform .28s var(--ease);
   }
   body.cat-panel-open .cft-chev{ transform:rotate(-135deg); margin-top:3px; }
@@ -806,6 +806,40 @@ html.js-anim .about-portrait.is-revealed .about-portrait-sign{
   }
   body.cat-panel-open .cat-tab-backdrop{ opacity:1; visibility:visible; }
   body.cat-panel-open{ overflow:hidden; }
+}
+
+/* ================= בלוק תשובה ישירה (AEO) ================= */
+.answer-block{ padding:66px 0 10px; }
+.answer-block .wrap{ max-width:760px; text-align:center; }
+.answer-block h2{ font-size:clamp(26px,3.6vw,36px); margin-bottom:14px; }
+.answer-block p{ font-size:19px; line-height:1.85; color:var(--muted); }
+
+/* ================= שאלות נפוצות ================= */
+.faq{ background:var(--bg2); }
+.faq-list{ max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:12px; }
+.faq-item{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius-md);
+  padding:0 22px; transition:border-color .25s var(--ease), box-shadow .25s var(--ease);
+}
+.faq-item[open]{ border-color:var(--gold); box-shadow:0 18px 36px -26px var(--shadow-warm); }
+.faq-item summary{
+  list-style:none; cursor:pointer; padding:18px 0;
+  font-weight:700; font-size:17.5px; color:var(--ink);
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+}
+.faq-item summary::-webkit-details-marker{ display:none; }
+/* גבול פיזי (לא inline-end) כדי שהחץ יצביע למטה גם ב-RTL */
+.faq-item summary::after{
+  content:""; flex-shrink:0; width:10px; height:10px;
+  border-right:2px solid var(--magenta); border-bottom:2px solid var(--magenta);
+  transform:rotate(45deg); margin-top:-4px; transition:transform .25s var(--ease);
+}
+.faq-item[open] summary::after{ transform:rotate(-135deg); margin-top:3px; }
+.faq-item p{ margin:0; padding:0 0 20px; color:var(--muted); font-size:16.5px; line-height:1.8; }
+@media (max-width:600px){
+  .faq-item{ padding:0 18px; }
+  .faq-item summary{ font-size:16.5px; }
+  .answer-block p{ font-size:17.5px; }
 }
 
 /* cta band */

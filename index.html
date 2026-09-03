@@ -3,19 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- טיוטה לתצוגה מקדימה - למנוע אינדוקס בגוגל עד ההשקה. להסיר כשעולים לאוויר. -->
-<meta name="robots" content="noindex, nofollow">
-<title>תכלייס | תוספת שיער קדמית בעבודת יד למטפחות ולדלילות</title>
-<meta name="description" content="תוספת שיער קדמית ייחודית למטפחות ולדלילות, בעבודת יד ומותאמת אישית לחלוטין. סטודיו תכלייס ברעננה, שירות ומכירות בכל הארץ.">
+<title>פאת פרונט ותוספת שיער למטפחות | תכלייס רעננה</title>
+<meta name="description" content="פאת פרונט בעבודת יד לחובשות מטפחות ולנשים עם שיער דליל. לייס בעומק 8 ס״מ, קו שיער טבעי והתאמה אישית מלאה. סטודיו תכלייס ברעננה, שירות בכל הארץ.">
 <meta name="theme-color" content="#B81E63">
 <link rel="icon" href="assets/logo.png" type="image/png">
+<link rel="canonical" href="https://itzik200592-byte.github.io/tachlace-site/">
 
-<!-- og:image חייבת להיות כתובת מלאה (https://...) לפני שהאתר עולה לאוויר, אחרת התצוגה בוואטסאפ תישאר ריקה -->
+<!-- כשמחברים דומיין משלנו: להחליף את כתובות ה-canonical / og:url / og:image בכל העמודים -->
 <meta property="og:type" content="website">
 <meta property="og:locale" content="he_IL">
-<meta property="og:title" content="תכלייס | תוספת שיער קדמית בעבודת יד למטפחות ולדלילות">
-<meta property="og:description" content="פתרון אחד, מדויק, שנבנה בדיוק בשבילך. עבודת יד, לייס בעומק 8 ס״מ, התאמה אישית מלאה. סטודיו ברעננה, שירות בכל הארץ.">
-<meta property="og:image" content="assets/logo.png">
+<meta property="og:site_name" content="תכלייס">
+<meta property="og:url" content="https://itzik200592-byte.github.io/tachlace-site/">
+<meta property="og:title" content="פאת פרונט ותוספת שיער למטפחות | תכלייס רעננה">
+<meta property="og:description" content="פאת פרונט בעבודת יד לחובשות מטפחות ולנשים עם שיער דליל. קו שיער טבעי, התאמה אישית מלאה. סטודיו ברעננה, שירות בכל הארץ.">
+<meta property="og:image" content="https://itzik200592-byte.github.io/tachlace-site/assets/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="תכלייס - פאת פרונט בעבודת יד למטפחות">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="פאת פרונט ותוספת שיער למטפחות | תכלייס רעננה">
+<meta name="twitter:description" content="פאת פרונט בעבודת יד לחובשות מטפחות ולנשים עם שיער דליל. סטודיו ברעננה, שירות בכל הארץ.">
+<meta name="twitter:image" content="https://itzik200592-byte.github.io/tachlace-site/assets/og-cover.jpg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,19 +32,41 @@
 <link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/style.css">
 
+<!-- טעינה מוקדמת של תמונת ה-Hero (ה-LCP של העמוד) - משפר את מהירות הטעינה הנמדדת -->
+<link rel="preload" as="image" href="assets/hero.jpg" fetchpriority="high">
+
 <!-- JSON-LD: עסק מקומי, ל-SEO מקומי -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": "HealthAndBeautyBusiness",
+  "@id": "https://itzik200592-byte.github.io/tachlace-site/#business",
   "name": "תכלייס",
-  "image": "assets/logo.png",
-  "description": "תוספת שיער קדמית ייחודית למטפחות ולדלילות, בעבודת יד ומותאמת אישית.",
+  "url": "https://itzik200592-byte.github.io/tachlace-site/",
+  "logo": "https://itzik200592-byte.github.io/tachlace-site/assets/logo.png",
+  "image": "https://itzik200592-byte.github.io/tachlace-site/assets/og-cover.jpg",
+  "description": "פאת פרונט בעבודת יד לחובשות מטפחות ולנשים עם שיער דליל. לייס בעומק 8 ס\"מ, קו שיער טבעי והתאמה אישית מלאה.",
+  "slogan": "הכי יפה לך ככה",
   "telephone": "+972539593290",
   "address": {
     "@type": "PostalAddress",
     "addressLocality": "רעננה",
     "addressCountry": "IL"
+  },
+  "areaServed": { "@type": "Country", "name": "ישראל" },
+  "founder": {
+    "@type": "Person",
+    "name": "בר רבקה זק",
+    "jobTitle": "מייסדת תכלייס"
+  },
+  "knowsAbout": ["פאת פרונט", "תוספת שיער קדמית", "פאה למטפחת", "דלילות שיער בנשים"],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "דגמי תכלייס",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "פאת פרונט בעבודת יד למטפחות" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "תוספת שיער קדמית לשיער דליל" } }
+    ]
   },
   "sameAs": [
     "https://instagram.com/tachlace"
@@ -77,7 +107,7 @@
       <a href="about.html">אודות</a>
       <a href="catalog.html">קטלוג</a>
       <a href="#reviews">המלצות</a>
-      <a href="#contact">שאלות נפוצות</a>
+      <a href="#faq">שאלות נפוצות</a>
     </nav>
     <div class="nav-actions">
       <a class="btn btn-main" href="https://wa.me/972539593290?text=%D7%94%D7%99%D7%99%2C%20%D7%94%D7%92%D7%A2%D7%AA%D7%99%20%D7%93%D7%A8%D7%9A%20%D7%94%D7%90%D7%AA%D7%A8%20%D7%95%D7%90%D7%A0%D7%99%20%D7%9E%D7%A2%D7%95%D7%A0%D7%99%D7%99%D7%A0%D7%AA%20%D7%9C%D7%AA%D7%90%D7%9D%20%D7%A4%D7%92%D7%99%D7%A9%D7%94">תיאום פגישת התאמה</a>
@@ -90,7 +120,7 @@
     <a href="about.html">אודות</a>
     <a href="catalog.html">קטלוג</a>
     <a href="#reviews">המלצות</a>
-    <a href="#contact">שאלות נפוצות</a>
+    <a href="#faq">שאלות נפוצות</a>
     <a class="btn btn-main" href="https://wa.me/972539593290?text=%D7%94%D7%99%D7%99%2C%20%D7%94%D7%92%D7%A2%D7%AA%D7%99%20%D7%93%D7%A8%D7%9A%20%D7%94%D7%90%D7%AA%D7%A8%20%D7%95%D7%90%D7%A0%D7%99%20%D7%9E%D7%A2%D7%95%D7%A0%D7%99%D7%99%D7%A0%D7%AA%20%D7%9C%D7%AA%D7%90%D7%9D%20%D7%A4%D7%92%D7%99%D7%A9%D7%94">תיאום פגישת התאמה</a>
   </nav>
 </header>
@@ -119,7 +149,7 @@
       <div class="hero-visual">
         <div class="hero-frame"></div>
         <div class="hero-img-wrap">
-          <img src="assets/hero.jpg" width="1000" height="2015" alt="דוגמנית עם כיסוי ראש ותוספת שיער תכלייס">
+          <img src="assets/hero.jpg" width="1000" height="2015" fetchpriority="high" alt="אישה עם מטפחת ופאת פרונט של תכלייס, קו שיער טבעי בחזית הראש">
           <div class="float-badge" role="img" aria-label="למעלה מ-300 לקוחות מרוצות">
             <div class="fb-avatars" aria-hidden="true">
               <span class="fb-av fb-av1"></span>
@@ -150,6 +180,12 @@
     </div>
   </div>
 
+  <!-- ===== בלוק תשובה ישירה - מנוסח כדי שגוגל ומנועי AI יצטטו אותו כתשובה ===== -->
+  <section id="what" class="answer-block"><div class="wrap">
+    <h2>מה זו פאת פרונט?</h2>
+    <p>פאת פרונט היא תוספת שיער קדמית המכסה את חזית הראש בלבד, ומיועדת לנשים החובשות מטפחת או מתמודדות עם שיער דליל. בתכלייס היא נתפרת בעבודת יד על לייס בעומק 8 ס"מ ומותאמת אישית לקו השיער, כך שהמראה נשאר טבעי לחלוטין גם מקרוב.</p>
+  </div></section>
+
   <!-- ===== למה תכלייס ===== -->
   <section id="why"><div class="wrap">
     <div class="sec-head">
@@ -160,19 +196,19 @@
 
     <div class="why">
       <div class="card">
-        <div class="why-media"><img src="assets/home-hairline.jpg" alt="תקריב על קו השיער הקדמי של תכלייס" loading="lazy"></div>
+        <div class="why-media"><img src="assets/home-hairline.jpg" width="900" height="1200" alt="תקריב על קו השיער הקדמי של תכלייס" loading="lazy"></div>
         <div class="glass-ic"><svg><use href="#icon-lace"></use></svg></div>
         <h3>קו שיער טבעי לחלוטין</h3>
         <p>הלייס העמוק יושב בול על המצח ונראה כמו קרקפת אמיתית - גם מקרוב.</p>
       </div>
       <div class="card">
-        <div class="why-media"><img src="assets/home-scarf.jpg" alt="תכלייס משולבת עם מטפחת, כיסוי מלא ושיער טבעי מלפנים" loading="lazy"></div>
+        <div class="why-media"><img src="assets/home-scarf.jpg" width="900" height="1200" alt="תכלייס משולבת עם מטפחת, כיסוי מלא ושיער טבעי מלפנים" loading="lazy"></div>
         <div class="glass-ic"><svg><use href="#icon-scarf"></use></svg></div>
         <h3>מתוכננת למטפחות</h3>
         <p>הדגם היחיד בארץ שתוכנן במיוחד לחובשות מטפחות, עם כיסוי מושלם בקדמת הראש.</p>
       </div>
       <div class="card card-shelf">
-        <div class="why-media"><img src="assets/home-shelf.jpg" alt="דגמי תכלייס מוכנים במלאי" loading="lazy"></div>
+        <div class="why-media"><img src="assets/home-shelf.jpg" width="900" height="1200" alt="דגמי תכלייס מוכנים במלאי" loading="lazy"></div>
         <div class="glass-ic"><svg><use href="#icon-box"></use></svg></div>
         <h3>מוצר מדף</h3>
         <p>מלאי מוכן שאפשר לבחור ולקחת כבר בפגישה הראשונה - בלי לחכות לייצור.</p>
@@ -189,19 +225,19 @@
         </div>
         <div class="marquee">
           <div class="marquee-track">
-            <div class="marquee-item"><img src="assets/gallery/gallery-model.jpg" alt="לקוחת תכלייס" loading="lazy"></div>
-            <div class="marquee-item"><img src="assets/catalog/tc-03-ginger-long.jpg" alt="לקוחת תכלייס" loading="lazy"></div>
-            <div class="marquee-item"><img src="assets/catalog/tc-07-darkbrown-long.jpg" alt="לקוחת תכלייס" loading="lazy"></div>
-            <div class="marquee-item"><img src="assets/catalog/tc-09-black-mid.jpg" alt="לקוחת תכלייס" loading="lazy"></div>
-            <div class="marquee-item"><img src="assets/catalog/tc-06-brownwavy-mid.jpg" alt="לקוחת תכלייס" loading="lazy"></div>
-            <div class="marquee-item"><img src="assets/catalog/tc-02-ash-mid.jpg" alt="לקוחת תכלייס" loading="lazy"></div>
+            <div class="marquee-item"><img src="assets/gallery/gallery-model.jpg" width="900" height="1200" alt="לקוחת תכלייס" loading="lazy"></div>
+            <div class="marquee-item"><img src="assets/catalog/tc-03-ginger-long.jpg" width="900" height="1200" alt="לקוחת תכלייס" loading="lazy"></div>
+            <div class="marquee-item"><img src="assets/catalog/tc-07-darkbrown-long.jpg" width="900" height="1200" alt="לקוחת תכלייס" loading="lazy"></div>
+            <div class="marquee-item"><img src="assets/catalog/tc-09-black-mid.jpg" width="900" height="1200" alt="לקוחת תכלייס" loading="lazy"></div>
+            <div class="marquee-item"><img src="assets/catalog/tc-06-brownwavy-mid.jpg" width="900" height="1200" alt="לקוחת תכלייס" loading="lazy"></div>
+            <div class="marquee-item"><img src="assets/catalog/tc-02-ash-mid.jpg" width="900" height="1200" alt="לקוחת תכלייס" loading="lazy"></div>
             <!-- כפילות לצורך לולאה רציפה -->
-            <div class="marquee-item" aria-hidden="true"><img src="assets/gallery/gallery-model.jpg" alt="" loading="lazy"></div>
-            <div class="marquee-item" aria-hidden="true"><img src="assets/catalog/tc-03-ginger-long.jpg" alt="" loading="lazy"></div>
-            <div class="marquee-item" aria-hidden="true"><img src="assets/catalog/tc-07-darkbrown-long.jpg" alt="" loading="lazy"></div>
-            <div class="marquee-item" aria-hidden="true"><img src="assets/catalog/tc-09-black-mid.jpg" alt="" loading="lazy"></div>
-            <div class="marquee-item" aria-hidden="true"><img src="assets/catalog/tc-06-brownwavy-mid.jpg" alt="" loading="lazy"></div>
-            <div class="marquee-item" aria-hidden="true"><img src="assets/catalog/tc-02-ash-mid.jpg" alt="" loading="lazy"></div>
+            <div class="marquee-item" aria-hidden="true"><img src="assets/gallery/gallery-model.jpg" width="900" height="1200" alt="" loading="lazy"></div>
+            <div class="marquee-item" aria-hidden="true"><img src="assets/catalog/tc-03-ginger-long.jpg" width="900" height="1200" alt="" loading="lazy"></div>
+            <div class="marquee-item" aria-hidden="true"><img src="assets/catalog/tc-07-darkbrown-long.jpg" width="900" height="1200" alt="" loading="lazy"></div>
+            <div class="marquee-item" aria-hidden="true"><img src="assets/catalog/tc-09-black-mid.jpg" width="900" height="1200" alt="" loading="lazy"></div>
+            <div class="marquee-item" aria-hidden="true"><img src="assets/catalog/tc-06-brownwavy-mid.jpg" width="900" height="1200" alt="" loading="lazy"></div>
+            <div class="marquee-item" aria-hidden="true"><img src="assets/catalog/tc-02-ash-mid.jpg" width="900" height="1200" alt="" loading="lazy"></div>
           </div>
         </div>
       </div>
@@ -219,6 +255,79 @@
 
   <!-- ===== סקשן המלצות (placeholder למיקום עתידי) ===== -->
   <div id="reviews"></div>
+
+  <!-- ===== שאלות נפוצות - גם UX וגם AEO. הטקסט כאן חייב להישאר זהה לסכמת FAQPage שמתחת ===== -->
+  <section id="faq" class="faq"><div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow tagline">שאלות נפוצות</div>
+      <h2>מה שחשוב לדעת לפני שמתחילים</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>מה ההבדל בין פאת פרונט לפאה מלאה?</summary>
+        <p>פאה מלאה מכסה את כל הראש. פאת פרונט מכסה רק את החלק הקדמי, ומשאירה את שאר הראש מכוסה במטפחת. כך נשמר כיסוי ראש מלא, ובו בזמן נראה קו שיער טבעי בחזית.</p>
+      </details>
+      <details class="faq-item">
+        <summary>האם רואים שזו לא השיער שלי?</summary>
+        <p>הלייס בעומק 8 ס"מ יושב על המצח ונראה כמו קרקפת אמיתית, וקו השיער נתפר בעבודת יד בהתאמה אישית. גם במבט קרוב המראה נשאר טבעי, וזו בדיוק הסיבה שהדגם פותח במשך שלוש שנים.</p>
+      </details>
+      <details class="faq-item">
+        <summary>למי פאת הפרונט של תכלייס מתאימה?</summary>
+        <p>לנשים החובשות מטפחת ורוצות מראה שיער טבעי בחזית, לנשים המתמודדות עם שיער דליל או נשירה, ולכל אישה שמחפשת להרגיש בטוחה ונינוחה יותר מול המראה.</p>
+      </details>
+      <details class="faq-item">
+        <summary>כמה זמן לוקח לקבל תכלייס?</summary>
+        <p>בסטודיו יש דגמי מדף מוכנים שאפשר לבחור ולקחת כבר בפגישת ההתאמה הראשונה. להזמנה אישית שנתפרת במיוחד עבורך נתאם יחד מועד בפגישה.</p>
+      </details>
+      <details class="faq-item">
+        <summary>כמה זה עולה ואיך מתאמים פגישת התאמה?</summary>
+        <p>המחיר משתנה לפי הדגם, האורך והגוון, ונמסר בפגישת ההתאמה שבה מתאימים בדיוק את מה שמתאים לך. הפגישה היא ללא התחייבות. לתיאום אפשר לפנות בוואטסאפ או בטלפון 053-9593290.</p>
+      </details>
+      <details class="faq-item">
+        <summary>איפה נמצא הסטודיו והאם יש שירות מחוץ לרעננה?</summary>
+        <p>הסטודיו נמצא ברעננה ופגישות ההתאמה מתקיימות בו. השירות והמכירות זמינים בכל הארץ, כך שאפשר לפנות גם מאזורים אחרים ונמצא יחד את הפתרון המתאים.</p>
+      </details>
+    </div>
+  </div></section>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "מה ההבדל בין פאת פרונט לפאה מלאה?",
+        "acceptedAnswer": { "@type": "Answer", "text": "פאה מלאה מכסה את כל הראש. פאת פרונט מכסה רק את החלק הקדמי, ומשאירה את שאר הראש מכוסה במטפחת. כך נשמר כיסוי ראש מלא, ובו בזמן נראה קו שיער טבעי בחזית." }
+      },
+      {
+        "@type": "Question",
+        "name": "האם רואים שזו לא השיער שלי?",
+        "acceptedAnswer": { "@type": "Answer", "text": "הלייס בעומק 8 ס\"מ יושב על המצח ונראה כמו קרקפת אמיתית, וקו השיער נתפר בעבודת יד בהתאמה אישית. גם במבט קרוב המראה נשאר טבעי, וזו בדיוק הסיבה שהדגם פותח במשך שלוש שנים." }
+      },
+      {
+        "@type": "Question",
+        "name": "למי פאת הפרונט של תכלייס מתאימה?",
+        "acceptedAnswer": { "@type": "Answer", "text": "לנשים החובשות מטפחת ורוצות מראה שיער טבעי בחזית, לנשים המתמודדות עם שיער דליל או נשירה, ולכל אישה שמחפשת להרגיש בטוחה ונינוחה יותר מול המראה." }
+      },
+      {
+        "@type": "Question",
+        "name": "כמה זמן לוקח לקבל תכלייס?",
+        "acceptedAnswer": { "@type": "Answer", "text": "בסטודיו יש דגמי מדף מוכנים שאפשר לבחור ולקחת כבר בפגישת ההתאמה הראשונה. להזמנה אישית שנתפרת במיוחד עבורך נתאם יחד מועד בפגישה." }
+      },
+      {
+        "@type": "Question",
+        "name": "כמה זה עולה ואיך מתאמים פגישת התאמה?",
+        "acceptedAnswer": { "@type": "Answer", "text": "המחיר משתנה לפי הדגם, האורך והגוון, ונמסר בפגישת ההתאמה שבה מתאימים בדיוק את מה שמתאים לך. הפגישה היא ללא התחייבות. לתיאום אפשר לפנות בוואטסאפ או בטלפון 053-9593290." }
+      },
+      {
+        "@type": "Question",
+        "name": "איפה נמצא הסטודיו והאם יש שירות מחוץ לרעננה?",
+        "acceptedAnswer": { "@type": "Answer", "text": "הסטודיו נמצא ברעננה ופגישות ההתאמה מתקיימות בו. השירות והמכירות זמינים בכל הארץ, כך שאפשר לפנות גם מאזורים אחרים ונמצא יחד את הפתרון המתאים." }
+      }
+    ]
+  }
+  </script>
 
   <!-- ===== CTA band ===== -->
   <section class="band" id="contact"><div class="wrap"><div class="inner">

@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# מנועי AI - מותר לסרוק ולצטט (חשוב ל-GEO: הופעה בתשובות של ChatGPT/Perplexity/Gemini)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+Sitemap: https://itzik200592-byte.github.io/tachlace-site/sitemap.xml
