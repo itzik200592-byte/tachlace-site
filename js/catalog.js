@@ -26,7 +26,7 @@
 
   // מקור הנתונים: פאנל ניהול האתר ב-CRM תכלייס (ישות SiteProduct).
   // אם הקריאה נכשלת, נשארים עם הרשימה הסטטית מ-data/products.js - האתר לא נשבר.
-  var PRODUCTS_API = "https://crm-smart-leads-copy-0f5e486e.base44.app/functions/getSiteProducts";
+  var PRODUCTS_API = "https://tachlace.isru-automation.com/functions/getSiteProducts";
 
   // סלוגן המותג + צבעי כותרת מתחלפים לכל כרטיס (מפלטת המותג)
   var SLOGAN = "הכי יפה לך ככה";
