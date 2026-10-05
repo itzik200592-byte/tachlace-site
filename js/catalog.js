@@ -18,11 +18,15 @@
     "לבן":            { bg: "#ededec", light: true }
   };
 
-  // סדר הצבעים בפילטר - רק צבעים שיש להם דגמים בפועל (כהה -> בהיר).
-  // בלונדי גוונים / אומברה / לבן הוסרו זמנית עד שיהיו דגמים, כדי למנוע סינון ל"מסך ריק".
-  var COLOR_ORDER = ["שחור פחם","שחור גוונים","חום כהה","חום גוונים","ג'ינג'י","בלונדי","אפור"];
-  var LENGTHS   = ["קצר","אמצע","ארוך"];
-  var HAIRTYPES = ["מתולתל","גלי","חלק"];
+  // סדר קנוני (כהה -> בהיר). הפילטר מציג רק ערכים שיש להם דגמים בפועל,
+  // כדי שלא ייווצר סינון ל"מסך ריק" - וכדי שצבע חדש שבר מוסיפה בפאנל יופיע אוטומטית.
+  var COLOR_CANON  = ["שחור פחם","שחור גוונים","חום כהה","חום גוונים","ג'ינג'י","בלונדי","בלונדי גוונים","אומברה","אפור","לבן"];
+  var LENGTH_CANON = ["קצר","אמצע","ארוך","ארוך מאוד"];
+  var TYPE_CANON   = ["מתולתל","גלי","חלק"];
+
+  // מקור הנתונים: פאנל ניהול האתר ב-CRM תכלייס (ישות SiteProduct).
+  // אם הקריאה נכשלת, נשארים עם הרשימה הסטטית מ-data/products.js - האתר לא נשבר.
+  var PRODUCTS_API = "https://crm-smart-leads-copy-0f5e486e.base44.app/functions/getSiteProducts";
 
   // סלוגן המותג + צבעי כותרת מתחלפים לכל כרטיס (מפלטת המותג)
   var SLOGAN = "הכי יפה לך ככה";
@@ -196,12 +200,47 @@
   }
 
   // ---- אתחול ----
+  // רשימת הערכים לפילטר: רק מה שקיים בדגמים בפועל, לפי הסדר הקנוני.
+  // ערך חדש שלא מוכר בסדר הקנוני נוסף בסוף, כך שצבע חדש מהפאנל לא "נעלם".
+  function optionsFor(key, canon) {
+    var present = {};
+    products.forEach(function (p) { if (p[key]) present[p[key]] = true; });
+    var out = canon.filter(function (v) { return present[v]; });
+    Object.keys(present).forEach(function (v) { if (out.indexOf(v) === -1) out.push(v); });
+    return out;
+  }
+
   // בונה קבוצות פילטר לתוך מיכל נתון
   function buildFilters(container) {
     if (!container) return;
-    buildFilterGroup(container, "color", "צבע", COLOR_ORDER.slice(), true);
-    buildFilterGroup(container, "length", "אורך", LENGTHS.slice(), false);
-    buildFilterGroup(container, "hairType", "סוג שיער", HAIRTYPES.slice(), false);
+    container.innerHTML = "";
+    buildFilterGroup(container, "color", "צבע", optionsFor("color", COLOR_CANON), true);
+    buildFilterGroup(container, "length", "אורך", optionsFor("length", LENGTH_CANON), false);
+    buildFilterGroup(container, "hairType", "סוג שיער", optionsFor("hairType", TYPE_CANON), false);
+  }
+
+  function buildAllFilters() {
+    buildFilters(document.getElementById("cat-filters"));    // סינון inline (ראש העמוד / דסקטופ)
+    buildFilters(document.getElementById("cat-filters-2"));  // עותק לפאנל הטאב (נייד)
+    syncChips();
+  }
+
+  // משיכת הקטלוג מפאנל הניהול. נכשל? נשארים עם הרשימה הסטטית ולא נוגעים בתצוגה.
+  function loadProductsFromPanel() {
+    if (!window.fetch) return;
+    fetch(PRODUCTS_API, { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !Array.isArray(data.products) || !data.products.length) return;
+        products = data.products;
+        // אם הפילטר שנבחר כבר לא קיים בדגמים החדשים - מאפסים אותו בלבד
+        ["color", "length", "hairType"].forEach(function (k) {
+          if (state[k] && !products.some(function (p) { return p[k] === state[k]; })) state[k] = "";
+        });
+        buildAllFilters();
+        render();
+      })
+      .catch(function () { /* אין רשת / ה-API למטה - הרשימה הסטטית כבר מוצגת */ });
   }
 
   // הטאב בנייד: מופיע כשגוללים אל הקטלוג, פותח פאנל סינון (שכבת overlay - אפס קפיצה)
@@ -246,8 +285,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    buildFilters(document.getElementById("cat-filters"));    // סינון inline (ראש העמוד / דסקטופ)
-    buildFilters(document.getElementById("cat-filters-2"));  // עותק לפאנל הטאב (נייד)
+    buildAllFilters();
 
     document.querySelectorAll(".cat-reset").forEach(function (b) { b.addEventListener("click", resetFilters); });
     document.getElementById("cat-empty-reset").addEventListener("click", resetFilters);
@@ -259,6 +297,7 @@
     modal.querySelector(".m-backdrop").addEventListener("click", closeModal);
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !modal.hidden) closeModal(); });
 
-    render();
+    render();                   // תצוגה מיידית מהרשימה הסטטית
+    loadProductsFromPanel();    // ואז עדכון מפאנל הניהול, אם זמין
   });
 })();

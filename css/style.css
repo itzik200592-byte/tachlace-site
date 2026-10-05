@@ -650,12 +650,12 @@ html.js-anim .about-portrait.is-revealed .about-portrait-sign{
 
 .cat-toolbar-foot{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding-top:4px; border-top:1px dashed var(--line); }
 #cat-count{ font-weight:700; color:var(--ink); font-size:16px; }
-#cat-reset{
+#cat-reset, .cat-reset{
   background:transparent; border:none; color:var(--magenta-deep); font-weight:700;
   cursor:pointer; font-size:15px; font-family:"Assistant",sans-serif; text-decoration:underline;
   text-underline-offset:3px; padding:4px;
 }
-#cat-reset:hover{ color:var(--magenta); }
+#cat-reset:hover, .cat-reset:hover{ color:var(--magenta); }
 
 /* --- רשת דגמים --- */
 .cat-section{ padding:44px 0 80px; }
