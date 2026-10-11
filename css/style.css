@@ -852,6 +852,7 @@ html.js-anim .about-portrait.is-revealed .about-portrait-sign{
 .band .eyebrow{ font-size:26px; margin-bottom:6px; }
 .band h2{ font-size:clamp(26px,3.6vw,38px); margin-bottom:14px; }
 .band p{ color:var(--muted); margin-bottom:22px; font-size:18.5px; }
+.band .band-note{ font-family:"HandHeb",cursive; font-size:21px; line-height:1.4; color:var(--magenta-deep); margin:18px 0 0; }
 
 /* טופס ליד בעמוד הבית (בתוך .band) - נשלח ל-CRM דרך js/leads.js */
 .lead-form{ max-width:440px; margin:0 auto; display:flex; flex-direction:column; gap:12px; }

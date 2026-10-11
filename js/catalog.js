@@ -161,7 +161,7 @@
     modal.querySelector(".m-desc").textContent = desc;
 
     // תיאור הדגם המדויק - נכנס לכל הודעת וואטסאפ כדי שבר תדע בדיוק על איזה מוצר מדובר
-    var prod = "גוון " + p.color + ", אורך " + p.length + ", " + p.hairType + " (דגם " + p.id + ")";
+    var prod = "גוון " + p.color + ", אורך " + p.length + ", " + p.hairType;
 
     var baseMsg = "היי, הגעתי דרך האתר ואני מעוניינת לתאם פגישה לגבי דגם תכלייס - " + prod + ".";
     modal.querySelector(".m-wa").href = waLink(baseMsg);
@@ -179,7 +179,7 @@
           customer_name: name,
           phone: phone,
           product_interest: prod,
-          notes: "ליד מהאתר · קטלוג · דגם " + p.id
+          notes: "ליד מהאתר · קטלוג"
         });
       }
       var msg = "היי, הגעתי דרך האתר. שמי " + name + ", טלפון " + phone
