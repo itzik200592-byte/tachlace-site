@@ -46,22 +46,38 @@
     setTimeout(function () { root.classList.remove('intro-done'); }, 1600);   // אנימציית הכניסה של ה-hero הסתיימה
   }
 
+  var hasBg = !!bg && getComputedStyle(bg).display !== 'none';
+
+  // שומר "אף פעם לא תקוע": אם הזמן בסרטון לא מתקדם 1.2 שניות (באפרינג באמצע), מוותרים ועוברים לאתר.
+  // נמדד לפי currentTime מול שעון, לא לפי אירועי waiting/stalled שלא אמינים בין דפדפנים.
+  // ניגון "עצור-סע" (באפרינג כל חצי שנייה) נחשב תקוע: דורשים לפחות 60% מקצב אמיתי בכל חלון של 1.5 שניות.
+  var samples = [];
+  function watchdog() {
+    if (finished) return;
+    var now = Date.now(), ct = fg.currentTime;
+    samples.push([now, ct]);
+    while (samples.length && now - samples[0][0] > 1500) samples.shift();
+    var first = samples[0];
+    if (now - first[0] >= 1400 && (ct - first[1]) < 0.6 * (now - first[0]) / 1000) { finish(); return; }
+    setTimeout(watchdog, 150);
+  }
+
+  // רץ פעם אחת, כשהסרטון באמת רץ. עד אז פס ההתקדמות מהבהב כדי שהפתיחה לא תיראה קפואה.
   function begin() {
     if (started || finished) return;
     started = true;
     clearTimeout(failTimer);
-    maxTimer = setTimeout(finish, 9000);                       // רשת ביטחון: לא נתקעים לעולם
+    intro.classList.remove('is-waiting');
+    maxTimer = setTimeout(finish, 9000);                       // רשת ביטחון אחרונה
+    if (hasBg) { try { bg.play(); } catch (e) {} }
 
-    var p = fg.play();
-    if (p && p.catch) p.catch(finish);                         // אוטופליי חסום (חיסכון בסוללה וכד') - מדלגים
-    if (bg && getComputedStyle(bg).display !== 'none') { try { bg.play(); } catch (e) {} }
-
-    var d = fg.duration || 4.8;
+    var d = fg.duration || 4.98;
     if (bar) { bar.style.animationDuration = d + 's'; intro.classList.add('is-running'); }
     fg.addEventListener('timeupdate', function () {
-      if (bg && Math.abs(bg.currentTime - fg.currentTime) > 0.25) bg.currentTime = fg.currentTime;
+      if (hasBg && Math.abs(bg.currentTime - fg.currentTime) > 0.25) bg.currentTime = fg.currentTime;
       if (fg.currentTime >= d - LEAD) finish();                // גיבוי ל-rAF (דפדפנים שמשהים rAF)
     });
+    samples = []; watchdog();
     // מדויק לפריים: המעבר מתחיל בדיוק כשהזום מתקרב, לא בקפיצות של timeupdate
     (function watch() {
       if (finished) return;
@@ -70,17 +86,48 @@
     })();
   }
 
-  // וידאו קל לנייד/טאבלט, איכות מלאה למחשב
+  // טעינה בשני שלבים, כדי שהסרטון ירוץ חלק גם בסלולר:
+  // 1) play() מיד - זו הדרך היחידה לגרום ל-iOS Safari להתחיל להוריד (הוא מתעלם מ-preload).
+  //    ברגע שהניגון מתחיל (יש נתונים) עוצרים על הפריים הראשון - זהה לפוסטר, הלקוחה לא רואה הבדל.
+  // 2) מחכים שייאגר מספיק באפר (או עד 2.2 שניות), ורק אז מנגנים באמת. בחיבור מהיר זה מיידי.
+  //    אם אחרי ההמתנה הבאפר עדיין דל - מדלגים על הפתיחה במקום להתחיל סרטון שייתקע.
   var file = window.innerWidth <= 820 ? 'intro-720.mp4' : 'intro-1080.mp4';
-  var src = 'assets/intro/' + file;
+  fg.muted = true; fg.defaultMuted = true; fg.playsInline = true; fg.setAttribute('webkit-playsinline', '');
+  if (hasBg) { bg.muted = true; bg.defaultMuted = true; bg.playsInline = true; }
   fg.poster = 'assets/intro/intro-poster.jpg';                 // הפוסטר נטען רק כשהפתיחה באמת מוצגת
-  fg.src = src;
-  if (bg && getComputedStyle(bg).display !== 'none') bg.src = 'assets/intro/intro-bg.mp4';
+  fg.src = 'assets/intro/' + file;
+  if (hasBg) bg.src = 'assets/intro/intro-bg.mp4';
 
-  fg.addEventListener('canplay', function () { setTimeout(begin, 80); });
+  function bufferedAhead() {
+    try { var b = fg.buffered; return b.length ? b.end(b.length - 1) : 0; } catch (e) { return 0; }
+  }
+  function realPlay() {
+    if (finished || started) return;
+    fg.addEventListener('playing', begin);
+    var p = fg.play();
+    if (p && p.catch) p.catch(finish);
+  }
+  function primed() {                                          // שלב 2: יש נתונים ראשונים
+    if (finished || started) return;
+    try { fg.pause(); fg.currentTime = 0; } catch (e) {}
+    var d = fg.duration || 4.98, t0 = Date.now();
+    (function wait() {
+      if (finished || started) return;
+      var ahead = bufferedAhead();
+      if (ahead >= d * 0.6 || ahead >= d - 0.1) { realPlay(); return; }        // מספיק כדי לרוץ חלק
+      if (Date.now() - t0 > 2200) { if (ahead >= d * 0.3) realPlay(); else finish(); return; }
+      setTimeout(wait, 100);
+    })();
+  }
+
   fg.addEventListener('ended', finish);
   fg.addEventListener('error', finish);
-  failTimer = setTimeout(finish, 3500);                        // חיבור איטי: לא מעכבים את האתר
+  intro.classList.add('is-waiting');
+  try {                                                        // שלב 1
+    var p0 = fg.play();
+    if (p0 && p0.then) p0.then(primed, finish); else primed();
+  } catch (e) { finish(); }
+  failTimer = setTimeout(finish, 3200);                        // שום דבר לא זז? לא מעכבים את האתר
 
   if (skip) skip.addEventListener('click', finish);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') finish(); });

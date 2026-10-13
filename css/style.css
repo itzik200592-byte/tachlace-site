@@ -902,15 +902,24 @@ html.intro-on, html.intro-leaving{ scroll-behavior:auto; }
 html.intro-on{ overflow:hidden; }
 html.intro-on .intro, html.intro-leaving .intro{
   display:block; position:fixed; inset:0; z-index:9999; background:var(--bg); overflow:hidden;
-  will-change:opacity, transform;
-  transition:opacity .95s cubic-bezier(.4,0,.2,1), transform 1.1s cubic-bezier(.22,.61,.36,1), visibility 0s linear 1.1s;
+  transition:opacity 1s cubic-bezier(.4,0,.2,1) .15s, transform 1.15s cubic-bezier(.22,.61,.36,1), visibility 0s linear 1.15s;
 }
-/* המעבר ל"וואו": הזום ממשיך דרך ה-fade (השכבה מתרחבת בזמן שהיא נמסה), וה-hero נדחף מבפנים אל מקומו */
+/* המעבר ל"וואו": בועה. ה-hero עולה מעל השכבה ונפתח כעיגול שגדל מנקודת הנחיתה של הזום (קו השיער),
+   בזמן שהסרטון מאחוריו ממשיך להתקרב ולהתרחב. רק clip-path, transform ו-opacity - בלי פילטרים. */
 html.intro-leaving .intro{ opacity:0; transform:scale(1.22); visibility:hidden; pointer-events:none; }
-html.intro-done .hero{ animation:introPush 1.1s cubic-bezier(.22,.61,.36,1) both; transform-origin:50% 25%; }
-html.intro-done .nav{ animation:introNav .6s ease-out .25s both; }
-@keyframes introPush{ from{ opacity:0; transform:scale(1.08); } 45%{ opacity:1; } to{ opacity:1; transform:none; } }
+html.intro-done .hero{
+  position:relative; z-index:10000;
+  animation:introBubble 1.05s cubic-bezier(.22,.61,.36,1) both; transform-origin:50% 35%;
+}
+html.intro-done .nav{ animation:introNav .5s ease-out .45s both; }
+@keyframes introBubble{
+  from{ clip-path:circle(0% at 50% 35%); -webkit-clip-path:circle(0% at 50% 35%); transform:scale(1.07); }
+  to{   clip-path:circle(150% at 50% 35%); -webkit-clip-path:circle(150% at 50% 35%); transform:none; }
+}
 @keyframes introNav{ from{ opacity:0; } to{ opacity:1; } }
+/* ממתינים לנתונים: הפס מהבהב כדי שהפתיחה לא תיראה קפואה בחיבור איטי */
+.intro.is-waiting .intro-bar{ background:var(--blush); animation:introPulse .9s ease-in-out infinite alternate; }
+@keyframes introPulse{ from{ opacity:.35; } to{ opacity:1; } }
 html.intro-on .nav *, html.intro-on .hero *, html.intro-on .hero *::before, html.intro-on .hero *::after{ animation-play-state:paused !important; }
 
 /* מחשב/טאבלט: דיוקן אנכי במרכז + טשטוש רך של אותו וידאו ברקע. נייד: וידאו על כל המסך */
