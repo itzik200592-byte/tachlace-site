@@ -12,6 +12,8 @@
   var bar = intro.querySelector('.intro-bar i');
 
   var finished = false, started = false, failTimer = null, maxTimer = null;
+  var LEAD = 0.8;          // שניות לפני סוף הסרטון שבהן מתחיל המעבר לאתר (הזום ממשיך מתחת ל-fade)
+  var LEAVE_MS = 1150;     // משך ה-fade של השכבה; חייב להיות >= משך ה-transition ב-CSS
 
   // נשאל בכל קריאה: הסקריפט רץ בראש ה-body, לפני שהניווט וה-main נטענו
   function setInert(on) {
@@ -27,9 +29,12 @@
     clearTimeout(failTimer); clearTimeout(maxTimer);
     try { sessionStorage.setItem('tc_intro_seen', '1'); } catch (e) {}
 
-    // intro-leaving משאיר את השכבה על המסך בזמן ה-fade; הסרת intro-on משחררת גלילה ומפעילה את אנימציות העמוד
+    // intro-leaving: השכבה נמסה ומתרחבת (הזום ממשיך "דרך" המסך). intro-done: ה-hero נדחף פנימה מתחתיה.
+    // הסרת intro-on משחררת גלילה ומפעילה את אנימציות העמוד
     root.classList.add('intro-leaving');
+    root.classList.add('intro-done');
     root.classList.remove('intro-on');
+    if (bg) { try { bg.pause(); } catch (e) {} }            // הרקע המטושטש קופא בזמן המעבר, חוסך פענוח בפריימים הקריטיים
     setInert(false);
     document.dispatchEvent(new Event('tachlace:intro-done'));
 
@@ -37,7 +42,8 @@
       root.classList.remove('intro-leaving');
       try { fg.pause(); if (bg) bg.pause(); } catch (e) {}
       if (intro.parentNode) intro.parentNode.removeChild(intro);
-    }, 900);
+    }, LEAVE_MS);
+    setTimeout(function () { root.classList.remove('intro-done'); }, 1600);   // אנימציית הכניסה של ה-hero הסתיימה
   }
 
   function begin() {
@@ -54,7 +60,14 @@
     if (bar) { bar.style.animationDuration = d + 's'; intro.classList.add('is-running'); }
     fg.addEventListener('timeupdate', function () {
       if (bg && Math.abs(bg.currentTime - fg.currentTime) > 0.25) bg.currentTime = fg.currentTime;
+      if (fg.currentTime >= d - LEAD) finish();                // גיבוי ל-rAF (דפדפנים שמשהים rAF)
     });
+    // מדויק לפריים: המעבר מתחיל בדיוק כשהזום מתקרב, לא בקפיצות של timeupdate
+    (function watch() {
+      if (finished) return;
+      if (fg.currentTime >= d - LEAD) { finish(); return; }
+      requestAnimationFrame(watch);
+    })();
   }
 
   // וידאו קל לנייד/טאבלט, איכות מלאה למחשב
