@@ -53,7 +53,6 @@
     var d = fg.duration || 4.8;
     if (bar) { bar.style.animationDuration = d + 's'; intro.classList.add('is-running'); }
     fg.addEventListener('timeupdate', function () {
-      if (fg.currentTime > d - 1.3) intro.classList.add('is-logo');
       if (bg && Math.abs(bg.currentTime - fg.currentTime) > 0.25) bg.currentTime = fg.currentTime;
     });
   }
@@ -63,7 +62,7 @@
   var src = 'assets/intro/' + file;
   fg.poster = 'assets/intro/intro-poster.jpg';                 // הפוסטר נטען רק כשהפתיחה באמת מוצגת
   fg.src = src;
-  if (bg && getComputedStyle(bg).display !== 'none') bg.src = src;
+  if (bg && getComputedStyle(bg).display !== 'none') bg.src = 'assets/intro/intro-bg.mp4';
 
   fg.addEventListener('canplay', function () { setTimeout(begin, 80); });
   fg.addEventListener('ended', finish);

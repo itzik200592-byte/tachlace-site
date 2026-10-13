@@ -908,19 +908,13 @@ html.intro-leaving .intro{ opacity:0; visibility:hidden; pointer-events:none; }
 html.intro-on .nav *, html.intro-on .hero *, html.intro-on .hero *::before, html.intro-on .hero *::after{ animation-play-state:paused !important; }
 
 /* מחשב/טאבלט: דיוקן אנכי במרכז + טשטוש רך של אותו וידאו ברקע. נייד: וידאו על כל המסך */
-.intro-bg{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform:scale(1.25); filter:blur(40px) saturate(1.05); opacity:.78; }
+/* הרקע הוא סרטון זעיר שאפוי מראש (assets/intro/intro-bg.mp4) והדפדפן רק מותח אותו. פילטר blur חי על וידאו מלא-מסך הפיל ~80% מהפריימים */
+.intro-bg{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.85; }
 .intro-fg{ position:absolute; top:0; bottom:0; left:50%; height:100%; aspect-ratio:9/16; transform:translateX(-50%); object-fit:cover; background:var(--blush); box-shadow:0 0 90px rgba(74,50,38,.28); }
 @media (max-aspect-ratio: 9/16){
   .intro-bg{ display:none; }
   .intro-fg{ left:0; width:100%; height:100%; aspect-ratio:auto; transform:none; box-shadow:none; }
 }
-
-.intro-logo{
-  position:absolute; left:50%; bottom:max(5vh, env(safe-area-inset-bottom)); width:clamp(84px,14vh,132px); height:auto;
-  transform:translate(-50%,14px) scale(.92); opacity:0; pointer-events:none; border-radius:50%; background:#fff; object-fit:cover;
-  transition:opacity .6s var(--ease), transform .6s var(--ease); filter:drop-shadow(0 6px 18px rgba(74,50,38,.28));
-}
-.intro.is-logo .intro-logo{ opacity:1; transform:translate(-50%,0) scale(1); }
 
 .intro-bar{ position:absolute; left:0; right:0; bottom:0; height:3px; background:rgba(255,255,255,.35); }
 .intro-bar i{ display:block; height:100%; width:100%; background:var(--magenta); transform:scaleX(0); transform-origin:right center; }
