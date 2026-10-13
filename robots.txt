@@ -17,4 +17,4 @@ Allow: /
 User-agent: ClaudeBot
 Allow: /
 
-Sitemap: https://itzik200592-byte.github.io/tachlace-site/sitemap.xml
+Sitemap: https://tachlace.net/sitemap.xml
