@@ -893,3 +893,44 @@ footer .f-legal a{ text-decoration:underline; text-underline-offset:3px; }
   .about-intro .about-name{ font-size:38px; letter-spacing:-.5px; }
   .about-intro .about-lead{ font-size:22px; line-height:1.55; }
 }
+
+/* ===== פתיחה קולנועית (index.html בלבד) =====
+   html.intro-on = השכבה מוצגת + גלילה נעולה + אנימציות העמוד מושהות עד הסיום.
+   html.intro-leaving = ה-fade החוצה (השכבה עדיין על המסך, העמוד כבר חי מתחתיה). */
+.intro{ display:none; }
+html.intro-on, html.intro-leaving{ scroll-behavior:auto; }
+html.intro-on{ overflow:hidden; }
+html.intro-on .intro, html.intro-leaving .intro{
+  display:block; position:fixed; inset:0; z-index:9999; background:var(--bg); overflow:hidden;
+  transition:opacity .7s var(--ease), visibility 0s linear .7s;
+}
+html.intro-leaving .intro{ opacity:0; visibility:hidden; pointer-events:none; }
+html.intro-on .nav *, html.intro-on .hero *, html.intro-on .hero *::before, html.intro-on .hero *::after{ animation-play-state:paused !important; }
+
+/* מחשב/טאבלט: דיוקן אנכי במרכז + טשטוש רך של אותו וידאו ברקע. נייד: וידאו על כל המסך */
+.intro-bg{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform:scale(1.25); filter:blur(40px) saturate(1.05); opacity:.78; }
+.intro-fg{ position:absolute; top:0; bottom:0; left:50%; height:100%; aspect-ratio:9/16; transform:translateX(-50%); object-fit:cover; background:var(--blush); box-shadow:0 0 90px rgba(74,50,38,.28); }
+@media (max-aspect-ratio: 9/16){
+  .intro-bg{ display:none; }
+  .intro-fg{ left:0; width:100%; height:100%; aspect-ratio:auto; transform:none; box-shadow:none; }
+}
+
+.intro-logo{
+  position:absolute; left:50%; bottom:max(5vh, env(safe-area-inset-bottom)); width:clamp(84px,14vh,132px); height:auto;
+  transform:translate(-50%,14px) scale(.92); opacity:0; pointer-events:none; border-radius:50%; background:#fff; object-fit:cover;
+  transition:opacity .6s var(--ease), transform .6s var(--ease); filter:drop-shadow(0 6px 18px rgba(74,50,38,.28));
+}
+.intro.is-logo .intro-logo{ opacity:1; transform:translate(-50%,0) scale(1); }
+
+.intro-bar{ position:absolute; left:0; right:0; bottom:0; height:3px; background:rgba(255,255,255,.35); }
+.intro-bar i{ display:block; height:100%; width:100%; background:var(--magenta); transform:scaleX(0); transform-origin:right center; }
+.intro.is-running .intro-bar i{ animation:introBar linear forwards; }
+@keyframes introBar{ to{ transform:scaleX(1); } }
+
+.intro-skip{
+  position:absolute; top:max(14px, env(safe-area-inset-top)); left:14px; z-index:2; border:0; cursor:pointer;
+  min-height:44px; padding:0 18px; border-radius:999px; background:rgba(255,253,250,.8); color:var(--ink);
+  font:600 14px/1 "Assistant",sans-serif; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+}
+.intro-skip:focus-visible{ outline:2px solid var(--magenta); outline-offset:2px; }
+@media (prefers-reduced-motion: reduce){ .intro{ display:none !important; } }

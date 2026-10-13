@@ -29,6 +29,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bellefair&family=Assistant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+<!-- פתיחה קולנועית: פעם אחת לביקור, ורק כשמתאים (בלי "צמצום תנועה", בלי חיסכון נתונים/2G, בלי קישור עמוק).
+     ?intro=1 מכריח הצגה לצורך בדיקה, ?intro=0 מדלג. הלוגיקה המלאה ב-js/intro.js -->
+<script>
+(function(){try{
+  var d=document.documentElement,q=location.search,show=true;
+  if(!/[?&]intro=1/.test(q)){
+    if(/[?&]intro=0/.test(q)||location.hash.length>1)show=false;
+    if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)show=false;
+    var c=navigator.connection;if(c&&(c.saveData||/2g$/.test(c.effectiveType||'')))show=false;
+    if(sessionStorage.getItem('tc_intro_seen'))show=false;
+  }
+  if(show){
+    d.classList.add('intro-on');
+    var l=document.createElement('link');l.rel='preload';l.as='image';l.href='assets/intro/intro-poster.jpg';
+    document.head.appendChild(l);
+  }
+}catch(e){}})();
+</script>
+
 <link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/style.css">
 
@@ -75,6 +94,16 @@
 </script>
 </head>
 <body>
+
+<!-- ===== פתיחה קולנועית (מוצגת רק כש-html.intro-on; ראו js/intro.js) ===== -->
+<div class="intro" id="intro">
+  <video class="intro-bg" muted playsinline preload="auto" tabindex="-1" aria-hidden="true" disablepictureinpicture></video>
+  <video class="intro-fg" muted playsinline preload="auto" tabindex="-1" aria-hidden="true" disablepictureinpicture></video>
+  <img class="intro-logo" src="assets/logo.png" alt="" width="132" height="132">
+  <div class="intro-bar" aria-hidden="true"><i></i></div>
+  <button class="intro-skip" type="button" aria-label="דלגי על הפתיחה">דלגי</button>
+</div>
+<script src="js/intro.js"></script>
 
 <a href="#main" class="skip-link">דלגי לתוכן הראשי</a>
 

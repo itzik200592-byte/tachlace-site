@@ -41,6 +41,11 @@
   el.textContent = '1';
   b.style.setProperty('--g', '0.12');                    // זוהר מינימלי לפני שמתחילים
   function start() {
+    // בזמן הפתיחה הקולנועית התג מוסתר מאחורי השכבה - ממתינים לסיומה כדי שהלקוחה תראה את הספירה
+    if (document.documentElement.classList.contains('intro-on')) {
+      document.addEventListener('tachlace:intro-done', function () { setTimeout(run, 360); }, { once: true });
+      return;
+    }
     // משהים מעט כדי שקפיצת הכניסה של התג תתנגן קודם, ואז מתחיל הטיפוס
     setTimeout(run, 360);
   }
