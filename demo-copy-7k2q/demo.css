@@ -1,0 +1,146 @@
+/* דמו קופי - מעטפת ההשוואה. נפרד לגמרי מהאתר החי. */
+*{ box-sizing:border-box; margin:0; padding:0; }
+:root{
+  --bg:#FDFBF8; --card:#FFFDFA; --ink:#4A3226; --muted:#6b5844;
+  --magenta:#B81E63; --magenta-deep:#93194f; --blush:#F6DCDC;
+  --gold:#C9A66B; --gold-deep:#8a6a3f; --line:#E7DACB; --sage:#5c7256;
+  --bar-h:112px;
+}
+html{ -webkit-text-size-adjust:100%; }
+[hidden]{ display:none !important; }
+body{
+  font-family:"Assistant","Segoe UI",Arial,sans-serif; color:var(--ink); background:#F3ECE4;
+  line-height:1.55; min-height:100vh;
+}
+button{ font:inherit; color:inherit; cursor:pointer; border:0; background:none; }
+button:focus-visible{ outline:2px solid var(--magenta); outline-offset:2px; }
+
+/* ---------- סרגל עליון ---------- */
+.bar{
+  position:sticky; top:0; z-index:50; background:rgba(253,251,248,.94);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.bar-top{ display:flex; align-items:center; gap:14px; padding:10px 18px; flex-wrap:wrap; }
+.brand{ display:flex; align-items:center; gap:10px; margin-inline-end:auto; }
+.brand img{ border-radius:50%; box-shadow:0 4px 12px -6px rgba(150,110,60,.5); }
+.brand-text b{ display:block; font-family:"Bellefair","Assistant",serif; font-size:21px; font-weight:400; color:var(--magenta-deep); line-height:1.1; }
+.brand-text span{ font-size:13px; color:var(--muted); }
+.bar-views{ padding:0 18px 10px; overflow-x:auto; scrollbar-width:none; }
+.bar-views::-webkit-scrollbar{ display:none; }
+
+.seg{ display:inline-flex; gap:2px; padding:3px; background:#F0E6DB; border-radius:999px; white-space:nowrap; }
+.seg button{
+  min-height:38px; padding:0 16px; border-radius:999px; font-weight:600; font-size:15px; color:var(--muted);
+  display:inline-flex; align-items:center; gap:7px; transition:background .18s, color .18s, box-shadow .18s;
+}
+.seg button:hover{ color:var(--ink); }
+.seg button[aria-selected="true"], .seg button.on{
+  background:#fff; color:var(--magenta-deep); box-shadow:0 2px 8px -2px rgba(74,50,38,.28);
+}
+.seg.device button{ padding:0 12px; }
+.seg.device svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.count{
+  display:inline-grid; place-items:center; min-width:22px; height:22px; padding:0 6px; border-radius:999px;
+  background:var(--magenta); color:#fff; font-size:12.5px; font-weight:700;
+}
+.count.zero{ background:#cdbfb1; }
+
+.banner{
+  margin:14px 18px 0; padding:12px 16px; border-radius:12px; background:#FFF6E2; border:1px solid #EAD7A6;
+  color:#6b5320; font-size:15px;
+}
+
+/* ---------- במה ---------- */
+.stage{ display:grid; grid-template-columns:1fr; gap:14px; padding:14px 18px 22px; }
+.stage.split{ grid-template-columns:1fr 1fr; }          /* RTL: הראשון מימין = "היום" */
+.pane[hidden]{ display:none; }
+.pane-title{ display:flex; align-items:center; gap:8px; font-weight:700; font-size:15px; padding:0 4px 8px; color:var(--ink); }
+.dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+.dot-today{ background:#9b8a78; }
+.dot-new{ background:var(--gold); box-shadow:0 0 0 3px rgba(201,166,107,.25); }
+.frame{
+  height:calc(100vh - var(--bar-h) - 64px); min-height:420px; background:#fff; border-radius:14px; overflow:hidden;
+  border:1px solid var(--line); box-shadow:0 18px 40px -26px rgba(74,50,38,.45);
+}
+.frame{ position:relative; }
+.frame iframe{ display:block; position:absolute; top:0; right:0; width:100%; height:100%; border:0; background:#fff; transform-origin:top right; }
+.stage.phone .frame{ width:410px; max-width:100%; margin:0 auto; border:10px solid #2c2520; border-radius:34px; box-shadow:0 24px 50px -24px rgba(0,0,0,.55); }
+.stage.phone .pane-title{ justify-content:center; }
+.stage.phone.split{ grid-template-columns:auto auto; justify-content:center; gap:36px; }
+
+/* ---------- רשימות (שינויים / כל הטקסטים) ---------- */
+.list{ max-width:1180px; margin:0 auto; padding:18px 18px 60px; }
+.list-head{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:6px 0 18px; }
+.list-head h2{ font-family:"Bellefair","Assistant",serif; font-weight:400; font-size:28px; color:var(--ink); margin-inline-end:auto; }
+.btn{
+  display:inline-flex; align-items:center; gap:8px; min-height:42px; padding:0 18px; border-radius:999px;
+  background:var(--magenta); color:#fff; font-weight:700; font-size:15px; box-shadow:0 8px 18px -10px rgba(184,30,99,.8);
+}
+.btn.ghost{ background:#fff; color:var(--magenta-deep); border:1px solid var(--line); box-shadow:none; }
+.page-block{ margin-bottom:34px; }
+.page-block > h3{ font-size:20px; margin:0 0 10px; padding-bottom:8px; border-bottom:2px solid var(--gold); display:flex; align-items:center; gap:10px; }
+.page-block > h3 small{ font-size:14px; color:var(--muted); font-weight:400; }
+.empty{ padding:22px; background:#fff; border:1px dashed var(--line); border-radius:14px; color:var(--muted); }
+
+.row{
+  display:grid; grid-template-columns:44px 1fr 1fr; gap:0; background:#fff; border:1px solid var(--line);
+  border-radius:14px; margin-bottom:10px; overflow:hidden;
+}
+.row .n{ display:grid; place-items:center; background:#F7EFE9; color:var(--gold-deep); font-weight:700; font-size:14px; }
+.row .cell{ padding:12px 16px; }
+.row .cell + .cell{ border-inline-start:1px solid var(--line); }
+.row .tag{ font-size:12.5px; color:var(--muted); margin-bottom:5px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+.row .tag i{ font-style:normal; background:#F3ECE4; border-radius:999px; padding:1px 9px; }
+.row .txt{ font-size:16px; line-height:1.65; white-space:pre-wrap; }
+.row.head{ background:none; border:0; margin-bottom:4px; }
+.row.head .cell{ padding:0 16px; font-weight:700; font-size:14px; color:var(--muted); }
+.row.head .cell + .cell{ border:0; }
+.cell.old .lbl{ color:#8a6f6f; } .cell.new .lbl{ color:var(--sage); }
+.lbl{ font-size:12.5px; font-weight:700; letter-spacing:.02em; display:block; margin-bottom:3px; }
+ins{ background:#DDEBD6; color:#2c5a28; text-decoration:none; border-radius:3px; padding:0 2px; }
+del{ background:#F8DADA; color:#963030; border-radius:3px; padding:0 2px; }
+.row.warn{ border-color:#E8B7B7; background:#FFF6F6; }
+.row.warn .n{ background:#F8DADA; color:#963030; }
+.row .actions{ margin-top:8px; }
+.row .link{ font-size:14px; font-weight:700; color:var(--magenta-deep); text-decoration:underline; text-underline-offset:3px; }
+.note{ margin-top:6px; font-size:14px; color:var(--gold-deep); }
+
+.deck-row{ display:grid; grid-template-columns:44px 170px 1fr; gap:0; background:#fff; border:1px solid var(--line); border-radius:12px; margin-bottom:6px; overflow:hidden; }
+.deck-row .n{ display:grid; place-items:center; background:#F7EFE9; color:var(--gold-deep); font-weight:700; font-size:13.5px; padding:8px 0; }
+.deck-row .meta{ padding:9px 12px; font-size:13px; color:var(--muted); border-inline-start:1px solid var(--line); }
+.deck-row .meta b{ display:block; color:var(--ink); font-size:13.5px; }
+.deck-row .txt{ padding:9px 14px; font-size:15.5px; border-inline-start:1px solid var(--line); }
+
+/* ---------- הודעה קופצת ---------- */
+.toast{
+  position:fixed; inset-inline:0; bottom:22px; margin:0 auto; width:max-content; max-width:90vw; z-index:80;
+  background:#2c2520; color:#fff; padding:11px 20px; border-radius:999px; font-size:15px; box-shadow:0 14px 30px -12px rgba(0,0,0,.6);
+}
+
+/* ---------- מצבי תצוגה ---------- */
+.seg button.only-wide{ display:none; }
+@media (min-width:1000px){ .seg button.only-wide{ display:inline-flex; } }
+@media (max-width:999px){
+  .seg.device{ display:none; }
+  .stage{ padding:10px 10px 16px; }
+  .frame{ height:calc(100vh - var(--bar-h) - 56px); border-radius:12px; }
+  .bar-top{ padding:8px 12px; }
+  .bar-views{ padding:0 12px 8px; }
+  .brand-text span{ display:none; }
+  .seg button{ padding:0 13px; font-size:14.5px; }
+  .row, .deck-row{ grid-template-columns:34px 1fr; }
+  .row .cell + .cell{ border-inline-start:0; border-top:1px solid var(--line); grid-column:2; }
+  .deck-row .meta{ grid-column:2; border-inline-start:0; }
+  .deck-row .txt{ grid-column:2; border-inline-start:0; border-top:1px solid var(--line); }
+  .row.head{ display:none; }
+  .list{ padding:12px 12px 50px; }
+}
+
+@media print{
+  body{ background:#fff; }
+  .bar, .banner, .stage, .toast, .list-head .btn, .row .actions{ display:none !important; }
+  .list{ display:block !important; max-width:none; padding:0; }
+  .row, .deck-row{ break-inside:avoid; border-color:#bbb; }
+  ins{ background:#d8ecd0; } del{ background:#f6d4d4; }
+}

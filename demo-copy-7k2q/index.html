@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#B81E63">
+<title>דמו קופי | תכלייס</title>
+<link rel="icon" href="../assets/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bellefair&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="demo.css">
+</head>
+<body class="view-today">
+
+<header class="bar">
+  <div class="bar-top">
+    <div class="brand">
+      <img src="../assets/logo.png" alt="" width="38" height="38">
+      <div class="brand-text">
+        <b>דמו קופי</b>
+        <span>מה שיש באתר היום מול ההצעה של בר</span>
+      </div>
+    </div>
+
+    <div class="seg pages" role="tablist" aria-label="עמוד">
+      <button type="button" data-page="index" role="tab">עמוד הבית</button>
+      <button type="button" data-page="catalog" role="tab">קטלוג</button>
+      <button type="button" data-page="about" role="tab">אודות</button>
+    </div>
+
+    <div class="seg device" aria-label="גודל מסך">
+      <button type="button" data-device="desktop" title="מחשב" aria-label="תצוגת מחשב">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+      </button>
+      <button type="button" data-device="phone" title="טלפון" aria-label="תצוגת טלפון">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2.2"/><path d="M11 18h2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="bar-views">
+    <div class="seg views" role="tablist" aria-label="תצוגה">
+      <button type="button" data-view="today" role="tab">היום באתר</button>
+      <button type="button" data-view="proposed" role="tab">ההצעה של בר</button>
+      <button type="button" data-view="split" role="tab" class="only-wide">זה לצד זה</button>
+      <button type="button" data-view="changes" role="tab">רשימת שינויים <span class="count" id="count">0</span></button>
+      <button type="button" data-view="deck" role="tab">כל הטקסטים</button>
+    </div>
+  </div>
+</header>
+
+<div class="banner" id="banner" hidden>
+  עדיין לא הוזנה הצעה של בר, ולכן "ההצעה" זהה לאתר היום. ברגע שהטקסט החדש יוכנס, ההבדלים יסומנו כאן אוטומטית.
+</div>
+
+<main class="stage" id="stage">
+  <section class="pane" id="pane-a">
+    <div class="pane-title"><i class="dot dot-today"></i><span id="title-a">היום באתר</span></div>
+    <div class="frame" id="frame-a"><iframe id="if-a" title="האתר היום" loading="eager"></iframe></div>
+  </section>
+  <section class="pane" id="pane-b">
+    <div class="pane-title"><i class="dot dot-new"></i><span id="title-b">ההצעה של בר</span></div>
+    <div class="frame" id="frame-b"><iframe id="if-b" title="ההצעה של בר" loading="eager"></iframe></div>
+  </section>
+</main>
+
+<section class="list" id="list" hidden aria-live="polite"></section>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="demo.js"></script>
+</body>
+</html>
