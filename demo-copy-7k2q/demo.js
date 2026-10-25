@@ -36,7 +36,8 @@
   ];
   var KINDS = { H1: 'כותרת ראשית', H2: 'כותרת', H3: 'כותרת משנה', H4: 'כותרת משנה', P: 'פסקה', A: 'קישור/כפתור',
                 BUTTON: 'כפתור', SUMMARY: 'שאלה', LI: 'פריט', LABEL: 'תווית', BLOCKQUOTE: 'ציטוט' };
-  var SKIP = 'script,style,noscript,svg,template,video,audio,canvas,iframe,.intro,[hidden],[aria-hidden="true"]';
+  // [hidden] לא נחשב: החלון הקופץ של הקטלוג ומצב "אין תוצאות" מוסתרים אבל הם טקסטים לכל דבר
+  var SKIP = 'script,style,noscript,svg,template,video,audio,canvas,iframe,.intro,[aria-hidden="true"]';
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -126,6 +127,44 @@
     }
   }
 
+  /* "in": מגביל את ההחלפה ליחידות באזור שהתווית שלו מכילה את הטקסט (למשל "פתיחה (Hero)") */
+  function inScope(u, p) { return !p['in'] || u.section.indexOf(p['in']) > -1; }
+  function paras(s) { return s ? String(s).split(/\n+/).filter(function (t) { return /\S/.test(t); }) : []; }
+
+  /* סקשן חדש בעיצוב של האתר: כותרת עליונה, כותרת, פסקאות, כרטיסים, סלוגן וכפתור */
+  function blockHTML(b) {
+    var h = '';
+    if (b.eyebrow || b.title || b.lead) {
+      h += '<div class="sec-head">';
+      if (b.eyebrow) h += '<div class="eyebrow tagline">' + esc(b.eyebrow) + '</div>';
+      if (b.title) h += '<h2>' + sanitize(b.title) + '</h2>';
+      paras(b.lead).forEach(function (t) { h += '<p>' + sanitize(t) + '</p>'; });
+      h += '</div>';
+    }
+    if (b.items && b.items.length) {
+      h += '<div class="why demo-items">';
+      b.items.forEach(function (it) {
+        h += '<div class="card"><h3>' + sanitize(it.title) + '</h3>' + paras(it.text).map(function (t) { return '<p>' + sanitize(t) + '</p>'; }).join('') + '</div>';
+      });
+      h += '</div>';
+    }
+    if (b.slogan) h += '<p class="demo-slogan">' + esc(b.slogan) + '</p>';
+    if (b.cta) h += '<div class="demo-cta"><a class="btn btn-main" href="#">' + esc(b.cta) + '</a></div>';
+    return h;
+  }
+
+  function blocksOf(pageId) { return ((proposals.blocks || []).filter(function (b) { return b.page === pageId; })); }
+  function blockPlain(b) {
+    var t = [];
+    if (b.eyebrow) t.push(b.eyebrow);
+    if (b.title) t.push(plain(b.title));
+    paras(b.lead).forEach(function (x) { t.push(plain(x)); });
+    (b.items || []).forEach(function (it) { t.push(plain(it.title)); paras(it.text).forEach(function (x) { t.push(plain(x)); }); });
+    if (b.slogan) t.push(b.slogan);
+    if (b.cta) t.push('[כפתור] ' + b.cta);
+    return t;
+  }
+
   function applyTo(doc, pageId) {
     var list = (proposals.pages && proposals.pages[pageId]) || [];
     var units = extract(doc);
@@ -135,22 +174,31 @@
     list.forEach(function (p, i) {
       if (p.from != null && p.to != null) {
         var key = norm(p.from);
-        units.forEach(function (u) { if (u.text === key) { stats[i].matched++; replaceUnit(u, p.to); } });
+        units.forEach(function (u) { if (u.text === key && inScope(u, p)) { stats[i].matched++; replaceUnit(u, p.to); } });
       }
     });
     list.forEach(function (p, i) {                                  // טקסט חדש שנוסף מתחת לקיים
       if (p.after == null) return;
       var key = norm(p.after);
       units.some(function (u) {
-        if (u.text !== key || !u.el) return false;
-        var c = u.el.cloneNode(false);
-        c.removeAttribute('id');
+        if (u.text !== key || !u.el || !inScope(u, p)) return false;
+        var c = doc.createElement(p.tag || u.el.tagName.toLowerCase());
+        if (p.cls != null) { if (p.cls) c.className = p.cls; }
+        else { Array.prototype.forEach.call(u.el.classList, function (k) { c.classList.add(k); }); }
+        if (p.tag === 'a') c.setAttribute('href', '#');
         c.innerHTML = sanitize(p.to);
         c.setAttribute('data-demo-added', '1');
         u.el.insertAdjacentElement('afterend', c);
         stats[i].matched++;
         return true;
       });
+    });
+    blocksOf(pageId).forEach(function (b) {                         // סקשנים חדשים
+      var ref = doc.querySelector(b.before || b.after);
+      if (!ref) return;
+      var d = doc.createElement('div');
+      d.className = 'demo-block'; d.setAttribute('data-demo-added', '1'); d.innerHTML = blockHTML(b);
+      ref.insertAdjacentElement(b.before ? 'beforebegin' : 'afterend', d);
     });
     return stats;
   }
@@ -170,7 +218,12 @@
     '.intro{display:none!important}' +
     '[data-demo-changed]{outline:2px dashed #C9A66B;outline-offset:5px;border-radius:4px;background-image:linear-gradient(rgba(201,166,107,.16),rgba(201,166,107,.16))}' +
     '[data-demo-added]{outline:2px dashed #5c7256;outline-offset:5px;border-radius:4px;background-image:linear-gradient(rgba(92,114,86,.14),rgba(92,114,86,.14))}' +
-    '.demo-removed{display:none!important}';
+    '.demo-removed{display:none!important}' +
+    '.demo-block{padding:56px 0 18px;margin-top:20px}.demo-block .sec-head p{margin-bottom:12px}' +
+    '.demo-items{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))!important}' +
+    '.demo-items .card{padding:30px 26px 26px}.demo-items .card h3{font-size:24px}.demo-items .card p{margin-bottom:10px}' +
+    '.demo-slogan{text-align:center;font-family:"HandHeb",cursive;font-size:32px;color:#93194f;margin:30px 0 6px}' +
+    '.demo-cta{text-align:center;margin-top:18px}';
 
   function guardFrame(fr) {
     var win = fr.contentWindow, doc = fr.contentDocument;
@@ -296,6 +349,7 @@
   function countChanges() {
     var n = 0;
     Object.keys(PAGES).forEach(function (p) { n += ((proposals.pages && proposals.pages[p]) || []).length; });
+    n += (proposals.blocks || []).length + (proposals.code || []).length;
     var c = $('#count'); c.textContent = n; c.classList.toggle('zero', n === 0);
     return n;
   }
@@ -340,6 +394,18 @@
       html += '<div class="list-head"><h2>' + title + '</h2>' +
               '<button class="btn ghost" id="b-copy" type="button">העתקה כטקסט</button>' +
               '<button class="btn" id="b-print" type="button">הדפסה / שמירה כ-PDF</button></div>';
+
+      var qs = proposals.questions || [];
+      if (v === 'changes' && qs.length) {                               // נקודות שהמסמך של בר לא סוגר
+        html += '<div class="page-block q-block"><h3>נקודות לבירור עם בר<small>' + qs.length + ' נקודות</small></h3><ol class="qlist">';
+        plainOut.push('== נקודות לבירור עם בר ==');
+        qs.forEach(function (q, i) {
+          var title = typeof q === 'string' ? q : q.q, detail = typeof q === 'string' ? '' : (q.d || '');
+          html += '<li><b>' + esc(title) + '</b>' + (detail ? '<span>' + esc(detail) + '</span>' : '') + '</li>';
+          plainOut.push((i + 1) + '. ' + title + (detail ? '\n   ' + detail : ''));
+        });
+        html += '</ol></div>';
+      }
       ids.forEach(function (id) {
         var doc = parsed[id], units = extract(doc);
         units.forEach(function (u) { u.doc = doc; });
@@ -355,7 +421,7 @@
           var list = (proposals.pages && proposals.pages[id]) || [], rows = '', k = 0;
           list.forEach(function (p) {
             var isAdd = p.after != null, key = norm(isAdd ? p.after : p.from);
-            var hits = units.filter(function (u) { return u.text === key; });
+            var hits = units.filter(function (u) { return u.text === key && inScope(u, p); });
             k++;
             if (!hits.length) {
               rows += '<div class="row warn"><div class="n">' + k + '</div><div class="cell" style="grid-column:2 / span 2"><div class="tag"><i>לא נמצא באתר</i></div><div class="txt">' + esc(key) + '</div><div class="note">הטקסט הזה לא נמצא בעמוד. ייתכן שהוא השתנה או שיש טעות הקלדה.</div></div></div>';
@@ -372,13 +438,39 @@
               '<div class="actions"><button type="button" class="link" data-show="' + id + '" data-key="' + esc(key) + '">הצג באתר</button></div></div></div>';
             plainOut.push(k + '. [' + u.section + '] ' + (isAdd ? 'להוסיף מתחת: ' : '') + 'היום: ' + (isAdd ? '-' : u.text) + '\n   הצעה: ' + (to === '' ? '(להסיר)' : to));
           });
-          if (!list.length) rows = '<div class="empty">אין שינויים בעמוד הזה.</div>';
+          var blks = blocksOf(id);
+          blks.forEach(function (b) {                                   // סקשנים חדשים
+            k++;
+            var lines = blockPlain(b);
+            rows += '<div class="row"><div class="n">' + k + '</div>' +
+              '<div class="cell old"><div class="tag"><i>אין היום</i></div><span class="lbl">היום</span><div class="txt"><span style="color:#9b8a78">(אין סקשן כזה באתר היום)</span></div></div>' +
+              '<div class="cell new"><div class="tag"><i>סקשן חדש</i>' + (b.label ? '<i>' + esc(b.label) + '</i>' : '') + '</div><span class="lbl">הצעה</span><div class="txt">' +
+              lines.map(function (t) { return '<ins>' + esc(t) + '</ins>'; }).join('<br><br>') + '</div>' +
+              (b.note ? '<div class="note">' + esc(b.note) + '</div>' : '') +
+              '<div class="actions"><button type="button" class="link" data-show="' + id + '" data-key="__block__">הצג באתר</button></div></div></div>';
+            plainOut.push(k + '. [סקשן חדש' + (b.label ? ': ' + b.label : '') + ']\n   ' + lines.join('\n   '));
+          });
+          if (!list.length && !blks.length) rows = '<div class="empty">אין שינויים בעמוד הזה.</div>';
           else html += '<div class="row head"><div></div><div class="cell">היום באתר</div><div class="cell">ההצעה של בר</div></div>';
           html += rows;
-          html = html.replace('<small id="sub-' + id + '"></small>', '<small>' + list.length + ' שינויים</small>');
+          html = html.replace('<small id="sub-' + id + '"></small>', '<small>' + (list.length + blks.length) + ' שינויים</small>');
         }
         html += '</div>';
       });
+      var code = proposals.code || [];
+      if (v === 'changes' && code.length) {                             // טקסטים שנוצרים בקוד או בהודעות
+        html += '<div class="page-block"><h3>טקסטים שנוצרים בקוד ובהודעות<small>' + code.length + ' שינויים, לא נראים בדמו</small></h3>' +
+                '<div class="row head"><div></div><div class="cell">היום</div><div class="cell">ההצעה של בר</div></div>';
+        plainOut.push('== טקסטים שנוצרים בקוד ובהודעות ==');
+        code.forEach(function (c, i) {
+          var d = wordDiff(norm(c.from || ''), norm(c.to || ''));
+          html += '<div class="row"><div class="n">' + (i + 1) + '</div>' +
+            '<div class="cell old"><div class="tag"><i>' + esc(c.where || 'קוד') + '</i></div><span class="lbl">היום</span><div class="txt">' + (c.from ? d.a : '<span style="color:#9b8a78">(אין היום)</span>') + '</div></div>' +
+            '<div class="cell new"><div class="tag"><i>הצעה של בר</i></div><span class="lbl">הצעה</span><div class="txt">' + d.b + '</div>' + (c.note ? '<div class="note">' + esc(c.note) + '</div>' : '') + '</div></div>';
+          plainOut.push((i + 1) + '. [' + (c.where || 'קוד') + '] היום: ' + (c.from || '-') + '\n   הצעה: ' + c.to);
+        });
+        html += '</div>';
+      }
       box.innerHTML = html;
       $('#b-print').onclick = function () { window.print(); };
       $('#b-copy').onclick = function () { copyText(plainOut.join('\n')); };
@@ -392,8 +484,8 @@
     setState({ page: pageId, view: 'proposed' });
     var tries = 0;
     (function wait() {
-      var d = $('#if-b').contentDocument, el = d && $$('[data-demo-old]', d).filter(function (n) { return n.getAttribute('data-demo-old') === key; })[0];
-      if (!el && d) el = $$('[data-demo-added]', d)[0];
+      var d = $('#if-b').contentDocument, el = d && key !== '__block__' && $$('[data-demo-old]', d).filter(function (n) { return n.getAttribute('data-demo-old') === key; })[0];
+      if (!el && d) el = $$('.demo-block', d)[0] || $$('[data-demo-added]', d)[0];
       if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
       if (++tries < 30) setTimeout(wait, 150);
     })();
