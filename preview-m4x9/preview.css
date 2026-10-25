@@ -1,0 +1,11 @@
+/* עיצוב לסקשנים החדשים בעותק הדמו של האתר (נוצר ע"י build_preview.js) */
+.new-sec{ padding:56px 0 18px; margin-top:20px; }
+.new-sec .sec-head p{ margin-bottom:12px; }
+.new-items{ grid-template-columns:repeat(auto-fit,minmax(250px,1fr)) !important; }
+.new-items .card{ padding:30px 26px 26px; }
+.new-items .card h3{ font-size:24px; }
+.new-items .card p{ margin-bottom:10px; }
+.new-slogan{ text-align:center; font-family:"HandHeb",cursive; font-size:32px; color:var(--magenta-deep); margin:30px 0 6px; }
+.new-cta{ text-align:center; margin-top:18px; }
+.f-nav a{ color:inherit; text-decoration:none; }
+.f-nav a:hover{ text-decoration:underline; }

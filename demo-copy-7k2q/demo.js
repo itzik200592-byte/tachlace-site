@@ -509,12 +509,13 @@
       .catch(function () { return { pages: {} }; })
       .then(function (j) {
         proposals = j || { pages: {} };
+        window.__demo.loaded = true;                              // ה-build של העותק הנקי (build_preview.js) ממתין לזה
         var n = countChanges();
         if (n > 0 && !location.hash) state.view = window.innerWidth >= 1000 ? 'split' : 'proposed';
         render(null);
       });
   }
 
-  window.__demo = { extract: extract, norm: norm, PAGES: PAGES, state: state };
+  window.__demo = { extract: extract, norm: norm, PAGES: PAGES, state: state, applyTo: applyTo, loaded: false };
   init();
 })();
