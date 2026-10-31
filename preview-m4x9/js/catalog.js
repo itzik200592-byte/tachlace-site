@@ -106,7 +106,7 @@
 
     var body = '<div class="cat-body">'
       + '<div class="cat-title" style="color:' + titleColor + '">'
-      +   '<span class="cat-title-brand">תכלייס</span>'
+      +   '<span class="cat-title-brand">תַּכְלֵייס</span>'
       +   '<span class="cat-title-slogan">' + SLOGAN + '</span>'
       + '</div>'
       + '<div class="cat-tags">'
