@@ -106,7 +106,7 @@
 
     var body = '<div class="cat-body">'
       + '<div class="cat-title" style="color:' + titleColor + '">'
-      +   '<span class="cat-title-brand">תכלייס</span>'
+      +   '<span class="cat-title-brand">תַּכְלֵייס</span>'
       +   '<span class="cat-title-slogan">' + SLOGAN + '</span>'
       + '</div>'
       + '<div class="cat-tags">'
@@ -163,7 +163,7 @@
     // תיאור הדגם המדויק - נכנס לכל הודעת וואטסאפ כדי שבר תדע בדיוק על איזה מוצר מדובר
     var prod = "גוון " + p.color + ", אורך " + p.length + ", " + p.hairType;
 
-    var baseMsg = "היי, הגעתי דרך האתר ואני מעוניינת לתאם פגישה לגבי דגם תכלייס - " + prod + ".";
+    var baseMsg = "היי, ראיתי דגם שאהבתי בקטלוג של תכלייס ואשמח לקבל עליו פרטים ולשמוע על אפשרויות הרכישה.";
     modal.querySelector(".m-wa").href = waLink(baseMsg);
 
     // טופס "השאירי פרטים" - ללא שרת, מרכיב הודעת וואטסאפ עם הפרטים (יחובר ל-CRM ב-Base44)
@@ -182,8 +182,7 @@
           notes: "ליד מהאתר · קטלוג"
         });
       }
-      var msg = "היי, הגעתי דרך האתר. שמי " + name + ", טלפון " + phone
-        + ". מעוניינת לתאם פגישה לגבי דגם תכלייס - " + prod + ".";
+      var msg = "היי, ראיתי דגם שאהבתי בקטלוג של תכלייס ואשמח לקבל עליו פרטים ולשמוע על אפשרויות הרכישה. שמי " + name + ", טלפון " + phone + ".";
       window.open(waLink(msg), "_blank", "noopener");
     };
     form.reset();

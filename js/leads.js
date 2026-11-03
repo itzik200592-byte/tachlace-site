@@ -39,9 +39,9 @@
       product_interest: "",
       notes: "ליד מהאתר · דף הבית"
     }).then(function () {
-      form.innerHTML = '<div class="lead-thanks">קיבלנו! 🤍 נחזור אלייך בהקדם.</div>';
+      form.innerHTML = '<div class="lead-thanks">תודה שפנית אלינו!<br>קיבלנו את הפרטים שלך ונשמח לעזור לך למצוא את הַתַּכְלֵייס המתאימה עבורך.</div>';
     }).catch(function () {
-      status.textContent = "קרתה תקלה קטנה. אפשר לפנות אלינו בוואטסאפ ונשמח לעזור.";
+      status.textContent = "משהו השתבש בשליחת הפרטים. נסי שוב או פני אלינו ישירות בוואטסאפ.";
       btn.disabled = false;
     });
   });
