@@ -97,7 +97,7 @@
 
     var media = '<div class="cat-media">';
     if (p.image) {
-      media += '<img src="' + p.image + '" alt="תוספת שיער תכלייס בגוון ' + p.color + '" loading="lazy">';
+      media += '<img src="' + p.image + '" alt="תוספת שיער תכלייס בגוון ' + p.color + (p.length ? ', אורך ' + p.length : '') + (p.hairType ? ', שיער ' + p.hairType : '') + '" loading="lazy">';
     } else {
       media += '<div class="cat-ph" style="background:' + c.bg + '">'
              + '<span class="cat-ph-label' + (c.light ? " on-light" : "") + '">תמונה בקרוב</span></div>';

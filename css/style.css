@@ -956,3 +956,5 @@ html.intro-on .nav *, html.intro-on .hero *, html.intro-on .hero *::before, html
 .new-cta{ text-align:center; margin-top:18px; }
 .f-nav a{ color:inherit; text-decoration:none; }
 .f-nav a:hover{ text-decoration:underline; }
+
+.faq-item p a.faq-link{ color:var(--magenta-deep); text-decoration:underline; text-underline-offset:3px; }
